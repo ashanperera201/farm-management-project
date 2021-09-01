@@ -1,0 +1,4 @@
+<div class="main main--{{sideNavigation.mode}}"
+    [ngClass]="[sideNavigation.show ? '' : 'hide-side-nav', (sideNavigation.mode === 'over' || sideNavigation.mode === 'pushed') && sideNavigation.show ? 'main--show-backdrop':'']">
+    <ng-content></ng-content>
+</div>

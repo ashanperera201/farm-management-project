@@ -1,0 +1,38 @@
+<div class="modal-header">
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="modal-title mb-1">{{headerText}}</h4>
+            <p *ngIf="!isEditMode">The field labels marked with <span class="required"></span> are required input fields</p>
+        </div>
+    </div>
+</div>
+<div class="modal-body mb-0">
+    <div [formGroup]="addFeedBrandForm">
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Name of the Brand</label>
+                <input type="text" class="form-control" placeholder="Pond Number" formControlName="brandName">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Grades</label>
+                <input type="text" class="form-control" placeholder="Area of the pond" formControlName="grades">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Shrimp Weight/Doc</label>
+                <input type="text" class="form-control" placeholder="Grade of the pond" formControlName="shrimpWeight"
+                (keypress)="onKeyPressChangesDecimal($event)">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Price/Kg</label>
+                <input type="text" class="form-control" placeholder="Fixed cost per Kg" formControlName="price" 
+                (keypress)="onKeyPressChangesDecimal($event)">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button type="button" class="btn btn-primary" [disabled]="addFeedBrandForm.invalid" (click)="saveFeedBrand()">{{saveButtonText}}</button>
+</div>

@@ -1,0 +1,53 @@
+<div class="auth-wrapper">
+    <div class="auth-wrapper__background">
+        <div class="d-flex flex-column justify-content-center application-header pt-lg-40 pt-15">
+            <a class="text-center mb-10">
+                <img src="../../../assets/media/logos/logo-letter-1.png" alt="" class="max-h-70px">
+            </a>
+            <h3 class="font-weight-bolder text-center font-size-h4 font-size-h1-lg" style="color: #986923;"> Welcome to
+                farm management system<br> please login here
+            </h3>
+        </div>
+        <div class="d-flex align-items-end application-header-background">
+            <img class="d-flex flex-row-fluid bgi-no-repeat bgi-position-y-bottom bgi-position-x-center"
+                src="../../../assets/media/svg/illustrations/login-visual-1.svg" alt="img-back">
+        </div>
+    </div>
+    <div class="auth-wrapper__content">
+        <div class="pb-13 pt-lg-0 pt-5">
+            <h3 class="font-weight-bolder text-dark font-size-h4 font-size-h1-lg">
+                Welcome to Farm Management System
+            </h3>
+            <span class="text-muted font-weight-bold font-size-h4">New Here?
+                <a id="kt_login_signup" class="text-primary font-weight-bolder" (click)="openSignUpPopup()">Sign Up</a>
+            </span>
+        </div>
+        <div [formGroup]="loginForm">
+            <div class="auth-wrapper__content--login d-flex flex-column align-items-center">
+                <div class="form-group">
+                    <label class="font-size-h6 font-weight-bolder text-dark">Email / User Name</label>
+                    <input class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" type="text"
+                        name="fullname" placeholder="Email / User Name" autocomplete="off" formControlName="userNameOrEmail"/>
+                </div>
+                <div class="form-group">
+                    <label class="font-size-h6 font-weight-bolder text-dark">User Password</label>
+                    <input class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" type="password"
+                        name="fullname" placeholder="User Password" autocomplete="off" formControlName="password"/>
+                </div>
+            </div>
+        </div>
+        <div class="pb-lg-0 pb-5">
+            <button type="submit" id="kt_login_signin_submit" [disabled]="loginForm.invalid" (click)="login()"
+                class="btn btn-primary font-weight-bolder font-size-h6 px-8 py-4 my-3 mr-3">
+                Sign In
+            </button>
+            <!-- <button type="button" class="btn btn-light-primary font-weight-bolder px-8 py-4 my-3 font-size-lg"><span
+                    class="svg-icon svg-icon-md">
+                    <img src="./assets/media/svg/social-icons/google.svg"></span> Sign in with Google
+            </button> -->
+        </div>
+        <div class="pb-lg-0 pb-5">
+            <a id="kt_login_signup" class="text-primary font-weight-bolder" (click)="openResetPassword()">Forgot Password ?</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,64 @@
+<div class="card card-custom">
+    <div class="modal-header">
+        <div class="row">
+            <div class="col-md-12">
+                <h3 class="mb-1"><b>Weekly Performance</b></h3>
+                <p>Please select options to get results</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-body mb-0">
+        <div [formGroup]="weeklyPerformanceForm">
+            <div class="form-row mb-4">
+                <div class="col">
+                    <label class="font-size-h7  text-dark required">Club Member</label>
+                    <select name="owner" id="owner" formControlName="owner" class="form-control"
+                        (change)="ownerOnChange()">
+                        <option value=null disabled selected>Select Club Member</option>
+                        <option *ngFor="let o of ownerList" [value]="o._id">{{o.firstName}} {{o.lastName}}</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="font-size-h7  text-dark required">Farm</label>
+                    <select name="farm" id="farm" formControlName="farmer" class="form-control"
+                        (change)="farmOnChange()">
+                        <option value=null disabled selected>Select Farm</option>
+                        <option *ngFor="let f of farmList" [value]="f._id">{{f.farmName}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-row mb-4">
+                <div class="col">
+                    <label class="font-size-h7  text-dark">Pond</label>
+                    <select name="pond" id="pond" formControlName="pondNo" class="form-control">
+                        <option value=null disabled selected>Select Pond</option>
+                        <option *ngFor="let p of pondList" [value]="p._id">{{p.pondNo}}</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="font-size-h7  text-dark">Week Number</label>
+                    <input type="text" class="form-control" placeholder="Week Number" formControlName="weekNumber"
+                        min="1" onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false"
+                        (keypress)="onKeyPressChanges($event)">
+                </div>
+            </div>
+            <!-- <div class="form-row mb-4">
+              <div class="col">
+                  <label class="font-size-h7  text-dark">Gain in Weight</label>
+                  <label class="font-size-h7  text-dark">{{gainInWeight}}</label>
+              </div>
+              <div class="col">
+                <label class="font-size-h7  text-dark">Total Bio Mass</label>
+                <label class="font-size-h7  text-dark">{{gainInWeight}}</label>
+            </div>
+          </div> -->
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" [disabled]="weeklyPerformanceForm.invalid"
+            (click)="showWeeklyPerformance()" *ngxPermissionsOnly="['SHOW_REPORT']">
+            Show
+        </button>
+    </div>
+</div>

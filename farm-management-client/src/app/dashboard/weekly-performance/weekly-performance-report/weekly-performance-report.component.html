@@ -1,0 +1,134 @@
+<div class="modal-header">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="modal-title mb-1">Weekly Performance Report</h3>
+        </div>
+    </div>
+</div>
+
+<div class="modal-body mb-0">
+    <div class="form-row mb-4 top-row">
+        <div class="col">
+            <label class="font-size-h7  text-dark report-data">Club Member : {{ owner?.firstName }} {{
+                owner?.lastName }}</label>
+        </div>
+        <div class="col">
+            <label class="font-size-h7  text-dark report-data">Farm : {{ farm?.farmName }}</label>
+        </div>
+        <div class="col">
+            <label class="font-size-h7  text-dark report-data">Pond No : {{ pond?.pondNo }}</label>
+        </div>
+        <div class="col">
+            <label class="font-size-h7  text-dark report-data">Week No : {{ week }}</label>
+        </div>
+    </div>
+
+    <div class="form-row mb-4">
+        <h5 class="section-headding">Weekly Sales</h5>
+    </div>
+
+    <div class="form-row">
+        <div class="col">
+            <label class="font-size-h7  text-dark report-data">Gain in Weight : {{ gainInWeight }}</label>
+        </div>
+        <div class="col">
+            <label class="font-size-h7  text-dark report-data">Total Bio Mass : {{ totalBioMass }}</label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col">
+            <label class="font-size-h7  text-dark report-data">Total Bio Mass Gain : {{ prevWeekBioMass -
+                totalBioMass }}</label>
+        </div>
+        <div class="col">
+            <label class="font-size-h7  text-dark report-data">Bio Mass on Average : {{ bioMassOnAverage }}</label>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col">
+            <label class="font-size-h7  text-dark report-data">Weekly Bio Mass Value Gain : {{
+                preWeekBioMassOnAverage - bioMassOnAverage }}</label>
+        </div>
+    </div>
+
+
+    <div class="form-row mb-4">
+        <h5 class="section-headding">Weekly Cost</h5>
+        <h5 class="section-headding">Total Feed Cost (Weekly)</h5>
+    </div>
+    <div class="form-row">
+        <div class="col">
+            <label class="font-size-h7  text-dark report-data">Total Feed : {{ dailyFeedTotal }}</label>
+        </div>
+        <div class="col">
+            <label class="font-size-h7  text-dark report-data">Weekly FCR : {{ dailyFeedTotal/ (gainInWeight *
+                expectedSurvivalPercentage * plCount) }}</label>
+        </div>
+    </div>
+    <div class="form-row mb-4">
+        <div class="col">
+            <label *ngIf="totalBioMass > 0" class="font-size-h7  text-dark report-data">FCR To Date : {{
+                totalFeedUptoDate / totalBioMass }}</label>
+            <label *ngIf="totalBioMass == 0" class="font-size-h7  text-dark report-data">FCR To Date : 0 </label>
+        </div>
+        <div class="col">
+            <label class="font-size-h7  text-dark report-data">Total Feed Cost : {{ dailyFeedTotal *
+                feedBrandUnitPrice }}</label>
+        </div>
+    </div>
+
+    <div class="form-row mb-4">
+        <h5 class="section-headding">Total Application Cost (Weekly)</h5>
+        <!-- begin:Table -->
+        <div class="table-responsive angular-bootstrap-table">
+            <table class="table table-head-custom table-vertical-center overflow-hidden applications-table">
+                <thead>
+                    <th> Type of Application </th>
+                    <th> Total No of Units </th>
+                    <th> Total Cost </th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let application of weeklyApplicationList">
+                        <td>{{application?.application?.applicationType}}</td>
+                        <td>{{application?.numberOfUnit}}</td>
+                        <td>{{application?.application?.costPerUnit * application?.numberOfUnit}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="form-row mb-4">
+        <h5 class="section-headding">Total Application Cost (Weekly)</h5>
+    </div>
+    <div class="form-row mb-4">
+        <h5 class="report-data">Total Feed Cost : {{totalFeedCost}}</h5>
+    </div>
+    <div class="form-row mb-4">
+        <h5 class="report-data">Total Application Cost : {{totalApllicationCost}}</h5>
+    </div>
+    <div class="form-row mb-4">
+        <h5 class="report-data">Other Cost : {{otherCost}}</h5>
+    </div>
+
+    <div class="form-row mb-4">
+        <h5 class="report-data">PL Cost : {{plCount}}</h5>
+    </div>
+    <div class="form-row mb-4">
+        <h5 class="report-data"> <b>Total : {{totalFeedCost + totalApllicationCost + otherCost + plCount }}</b></h5>
+    </div>
+    <div class="form-row mb-4">
+        <h5 class="report-data">Weekly Profit/Loss : {{totalBioMass - (totalFeedCost + totalApllicationCost +
+            otherCost + plCount) }}</h5>
+    </div>
+
+    <div class="form-row mb-4">
+        <h5 *ngIf="totalBioMass > 0" class="report-data">Profit/Loss Per Kg : {{ (totalBioMass - (totalFeedCost +
+            totalApllicationCost + otherCost + plCount)) / totalBioMass }}</h5>
+        <h5 *ngIf="totalBioMass == 0" class="report-data">Profit/Loss Per Kg : 0 </h5>
+    </div>
+
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close Report</button>
+</div>

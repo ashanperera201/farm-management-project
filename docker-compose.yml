@@ -1,0 +1,22 @@
+version: '2' # specify docker-compose version
+
+# define the services/containers to be run
+services: 
+  angular: # name of the client side application
+    build: farm-management-client
+    ports: 
+      - "4150:4150" #specify port forwarding 
+    volumes:
+      - ./farm-management-client:/usr/src/app/dist/farm-management-client # this will enable changes made to the angular app reflect in the container
+  
+  express: # name of the server side application
+    build: farm-management-server
+    ports:
+      - "3001:3001" #specify port forwarding
+    links: 
+      - database
+
+  database: # name of the third service
+     image: mongo #specify image to build container from 
+     ports: 
+      - "27017:27017" #specify port forwarding

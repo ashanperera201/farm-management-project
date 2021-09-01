@@ -1,0 +1,29 @@
+.main {
+    width: inherit;
+ //   transition: 0.1s;
+    position: inherit;
+
+    &--side {
+        margin-left: 265px;
+    }
+
+    &--over {
+        margin-left: 0;
+    }
+
+    &--pushed {
+        margin-left: 265px;
+    }
+
+    &--show-backdrop {
+        background-color: rgba(0, 0, 0, 0.4) !important;
+    }
+}
+
+.side-nav-width {
+    width: 265px !important;
+}
+
+.hide-side-nav {
+    margin-left: 70px !important;
+}

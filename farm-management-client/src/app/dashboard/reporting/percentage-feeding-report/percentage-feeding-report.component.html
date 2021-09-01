@@ -1,0 +1,80 @@
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Percentage Feeding Report</h3>
+        </div>
+        <div class="card-toolbar">
+            <button type="button" class="btn btn-success" (click)="generateReport()" *ngxPermissionsOnly="['SHOW_REPORT']">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                Generate Report
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- begin: Filtration form -->
+        <div class="row form-row mb-4">
+            <div class="col-md-4">
+                <label class="font-size-h7  text-dark">Search</label>
+                <input type="text" class="form-control" name="searchText" placeholder="Search"
+                    [(ngModel)]="searchParam" />
+            </div>
+            <div class="row col-md-8" [formGroup]="filterForm">
+                <div class="col">
+                    <label class="font-size-h7  text-dark">Club Member</label>
+                    <select name="firstName" id="_id" class="form-control" formControlName="owner"
+                        (change)="filterChange($event)">
+                        <option value=null disabled selected>Select Owner</option>
+                        <option *ngFor="let o of ownerList" [value]="o._id">{{o.firstName}} {{o.lastName}}</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="font-size-h7  text-dark">Farm</label>
+                    <select name="firstName" id="_id" class="form-control" formControlName="farmer"
+                        (change)="filterChange($event)">
+                        <option value=null disabled selected>Select Farm</option>
+                        <option *ngFor="let f of farmList" [value]="f._id">{{f.farmName}}</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="font-size-h7  text-dark">Pond</label>
+                    <select name="firstName" id="_id" class="form-control" formControlName="pond"
+                        (change)="filterChange($event)">
+                        <option value=null disabled selected>Select Pond</option>
+                        <option *ngFor="let p of pondList" [value]="p._id">{{p.pondNo}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- end: Filtration form -->
+        <!-- begin:Table -->
+        <div class="table-responsive angular-bootstrap-table">
+            <table class="table table-head-custom table-vertical-center overflow-hidden">
+                <thead>
+                    <th> AWB </th>
+                    <th> Sales Price </th>
+                    <th> Created Date </th>
+                    <th> Status </th>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let application of (percentageFeedingList | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize) | filter:searchParam; let i = index ">
+                        <td>{{ application?.averageBodyWeight }}</td>
+                        <td>{{ application?.feedPercentage }}</td>
+                        <td>{{ application?.createdOn | date: 'EEEE, MMMM d, y' }}</td>
+                        <td>
+                            <span [ngClass]="application?.isActive ? 'active' : 'inactive'"></span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-center"
+                *ngIf="percentageFeedingList && percentageFeedingList.length === 0">
+                <span>No records found</span>
+            </div>
+            <ngb-pagination
+                [collectionSize]="percentageFeedingList && percentageFeedingList.length ? percentageFeedingList.length: 0"
+                [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

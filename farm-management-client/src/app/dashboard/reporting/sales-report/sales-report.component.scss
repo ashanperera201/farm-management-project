@@ -1,0 +1,8 @@
+.active:after {
+    content: "Active";
+    color: green;
+}
+.inactive {
+    content: "Inactive";
+    color: red;
+}

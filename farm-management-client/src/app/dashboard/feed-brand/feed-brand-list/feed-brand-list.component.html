@@ -1,0 +1,96 @@
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Feed Brand Management</h3>
+        </div>
+        <div class="card-toolbar">
+            <a type="button" class="btn btn-primary" (click)="addNewFeedBrand()" *ngxPermissionsOnly="['']"><i class="fa fa-plus"
+                    aria-hidden="true"></i> Add Feed Brand</a>
+            <!-- <a type="button" class="btn btn-success m-1" (click)="importFeedBands()"><i class="fa fa-files-o"
+                    aria-hidden="true"></i> Import Feed Brands</a> -->
+            <a type="button" class="btn btn-danger ml-2" (click)="deleteSelected()" *ngxPermissionsOnly="['']"><i class="fa fa-trash" aria-hidden="true"></i>Delete Feed Brands</a>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- begin: Filtration form -->
+        <div class="form form-label-right">
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <div class="col-lg-5">
+                        <input type="text" class="form-control" name="searchText" placeholder="Search"
+                            [(ngModel)]="filterParam" /><small class="form-text text-muted"><b>Search</b></small>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-flex justify-content-lg-end justify-content-md-center justify-content-sm-start">
+                    <!-- begin: Grouping -->
+                    <div>
+                        <button type="button" class="btn btn-light-primary font-weight-bolder font-size-sm mr-2"
+                            (click)="exportFeedBrandList(exportTypes.PDF)" *ngxPermissionsOnly="['']">
+                            <i class="fa fa-file-text"></i>
+                            <span>PDF</span>
+                        </button>
+                        <button type="button" class="btn btn-light-primary font-weight-bolder font-size-sm mr-2"
+                            (click)="exportFeedBrandList(exportTypes.CSV)" *ngxPermissionsOnly="['']">
+                            <i class="fa fa-table"></i>
+                            <span>CSV</span>
+                        </button>
+                    </div>
+                    <!-- end: Grouping -->
+                </div>
+            </div>
+        </div>
+        <!-- end: Filtration form -->
+
+        <!-- begin:Table -->
+        <div class="table-responsive angular-bootstrap-table">
+            <table class="table table-head-custom table-vertical-center overflow-hidden">
+                <thead>
+                    <th class="selection-cell-header" data-row-selection="true">
+                        <label class="checkbox checkbox-single">
+                            <input type="checkbox" [checked]="isAllChecked" [(ngModel)]="isAllChecked"
+                                (ngModelChange)="onSelectionChange()" />
+                            <span></span>
+                        </label>
+                    </th>
+                    <th> Name of the Brand</th>
+                    <th> Grades </th>
+                    <th> Shrimp Weight </th>
+                    <th> Price/Kg </th>
+                    <th> Action </th>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let feedBrand of (feedBrandList | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize) | filter:filterParam;let i = index">
+                        <td class="selection-cell">
+                            <label class="checkbox checkbox-single">
+                                <input type="checkbox" [checked]="feedBrand.isChecked" (change)="singleSelectionChange(i)" />
+                                <span></span>
+                            </label>
+                        </td>
+                        <td>{{ feedBrand?.brandName }}</td>
+                        <td>{{ feedBrand?.grades }}</td>
+                        <td>{{ feedBrand?.shrimpWeight }}</td>
+                        <td>{{ feedBrand?.price }}</td>
+                       <td>
+                            <a title="Edit Role" class="btn btn-icon btn-light btn-hover-primary btn-sm"
+                                (click)="updateFeedBrand(feedBrand)" *ngxPermissionsOnly="['']">
+                                <span [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'"
+                                    class="svg-icon svg-icon-md svg-icon-primary">
+                                </span>
+                            </a>
+                            <a title="Delete item" class="btn btn-icon btn-light btn-hover-danger btn-sm ml-2"
+                                (click)="deleteRecord(feedBrand?._id)" *ngxPermissionsOnly="['']">
+                                <span [inlineSVG]="'./assets/media/svg/icons/General/Trash.svg'"
+                                    class="svg-icon svg-icon-md svg-icon-danger">
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <ngb-pagination
+            [collectionSize]="feedBrandList && feedBrandList.length ? feedBrandList.length: 0"
+            [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+        </ngb-pagination>
+        </div>
+    </div>
+</div>

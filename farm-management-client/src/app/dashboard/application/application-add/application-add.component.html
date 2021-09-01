@@ -1,0 +1,39 @@
+<div class="modal-header">
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="modal-title mb-1">{{headerText}}</h4>
+            <p *ngIf="!isEditMode">The field labels marked with <span class="required"></span> are required input fields</p>
+        </div>
+    </div>
+</div>
+
+<div class="modal-body mb-0">
+    <div [formGroup]="addApplicationForm">
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Type of Application</label>
+                <input type="text" class="form-control" placeholder="Application Type" formControlName="applicationType">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Name</label>
+                <input type="text" class="form-control" placeholder="Name" formControlName="applicantName">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark">Unit (Kg / Liters)</label>
+                <input type="text" class="form-control" placeholder="Unit" formControlName="unit" min = "0"
+                (keypress)="onKeyPressChangesDecimal($event)">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark">Cost per unit</label>
+                <input type="text" class="form-control" placeholder="Cost per unit" formControlName="costPerUnit" min = "0"
+                (keypress)="onKeyPressChangesDecimal($event)">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button type="button" class="btn btn-primary" [disabled]="addApplicationForm.invalid" (click)="saveApplication()">{{saveButtonText}}</button>
+</div>

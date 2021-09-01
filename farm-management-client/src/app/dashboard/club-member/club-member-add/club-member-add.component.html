@@ -1,0 +1,81 @@
+<div class="modal-header">
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="modal-title mb-1">{{headerText}}</h4>
+            <p *ngIf="!isEditMode">The field labels marked with <span class="required"></span> are required input fields
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="modal-body mb-0">
+    <div [formGroup]="addClubmembersForm">
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">First Name</label>
+                <input type="text" class="form-control" placeholder="First name" formControlName="firstName">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Last Name</label>
+                <input type="text" class="form-control" placeholder="Last name" formControlName="lastName">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark">Email</label>
+                <input type="email" class="form-control mb-4" placeholder="E-mail" formControlName="email">
+                <div *ngIf="addClubmembersForm.controls.email.invalid && addClubmembersForm.controls.email.touched"
+                    class="text-danger">
+                    invalid email format
+                </div>
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Contact Number</label>
+                <input type="text" class="form-control" placeholder="Contact Number" formControlName="contactNumber"
+                    minlength="10" maxlength="10" onCopy="return false" onDrag="return false" onDrop="return false"
+                    onPaste="return false" (keypress)="onKeyPressChanges($event)">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Nic</label>
+                <input type="text" class="form-control" placeholder="Nic" formControlName="nic"
+                maxlength="15" onCopy="return false" onDrag="return false" onDrop="return false"
+                    onPaste="return false">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">City</label>
+                <input type="text" class="form-control" placeholder="City" formControlName="city">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Address</label>
+                <textarea type="text" class="form-control" placeholder="Address" formControlName="address"></textarea>
+            </div>
+        </div>
+        <div class="form-row mb-4" *ngIf="!isEditMode">
+            <div class="col">
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="addUser" (change)="onAddUserChange($event)">
+                    <label class="form-check-label" for="addUser">Add User</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-row mb-4" *ngIf="showAddUser && !isEditMode">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">User Name</label>
+                <input type="text" class="form-control" placeholder="User Name" formControlName="userName">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Password</label>
+                <input type="password" class="form-control mb-4" placeholder="Password" formControlName="password">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button type="button" class="btn btn-primary" [disabled]="addClubmembersForm.invalid"
+        (click)="saveClubMember()">{{saveButtonText}}</button>
+</div>

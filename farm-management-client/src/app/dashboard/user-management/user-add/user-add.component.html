@@ -1,0 +1,87 @@
+<div class="modal-header">
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="modal-title mb-1">{{headerText}}</h4>
+            <p *ngIf="!isEditMode">The field labels marked with <span class="required"></span> are required input fields
+            </p>
+        </div>
+    </div>
+</div>
+<div class="modal-body mb-0">
+    <div [formGroup]="addUserForm">
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7 text-dark required">First Name</label>
+                <input type="text" class="form-control" placeholder="First name" formControlName="firstName">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark">Middle Name</label>
+                <input type="text" class="form-control" placeholder="Middle name" formControlName="middleName">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Last Name</label>
+                <input type="text" class="form-control" placeholder="Last name" formControlName="lastName">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Contact</label>
+                <input type="text" class="form-control" placeholder="Contact" formControlName="contact" maxlength="10"
+                    onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false"
+                    (keypress)="onKeyPressChanges($event)">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">NIC</label>
+                <input type="text" class="form-control" placeholder="Nic" formControlName="nic" maxlength="12">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Address</label>
+                <input type="text" class="form-control" placeholder="Address" formControlName="userAddress">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark">Passport ID</label>
+                <input type="text" class="form-control" placeholder="Passport ID" formControlName="passpordId"
+                    maxlength="12">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Email Address</label>
+                <input type="email" class="form-control mb-4" placeholder="E-mail" formControlName="userEmail">
+                <div *ngIf="addUserForm.controls.userEmail.status == 'INVALID' && addUserForm.controls.userEmail.touched " class="text-danger">
+                    invalid email format
+                </div>
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">User Name</label>
+                <input type="text" class="form-control mb-4" placeholder="User Name" formControlName="userName">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark">Role</label>
+                <ng-multiselect-dropdown [placeholder]="'roles'" formControlName="roles" [settings]="dropdownSettings"
+                    [data]="dropdownList">
+                </ng-multiselect-dropdown>
+            </div>
+        </div>
+        <div class="form-row mb-4" *ngIf="!this.isEditMode">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Password</label>
+                <input type="password" class="form-control mb-4" placeholder="Password" formControlName="password">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Confirm Password</label>
+                <input type="password" class="form-control mb-4" placeholder="Confirm Password"
+                    formControlName="confirmPassword">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button type="button" class="btn btn-primary" [disabled]="addUserForm.invalid"
+        (click)="userSaveUpdate()">{{saveButtonText}}</button>
+</div>

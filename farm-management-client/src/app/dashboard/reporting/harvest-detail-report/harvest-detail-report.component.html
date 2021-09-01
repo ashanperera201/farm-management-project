@@ -1,0 +1,90 @@
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Harvest Management Report</h3>
+        </div>
+        <div class="card-toolbar">
+            <button type="button" class="btn btn-secondary">
+                Clear Filteration
+            </button>
+            <button type="button" class="ml-3 btn btn-success" (click)="generateReport()" *ngxPermissionsOnly="['SHOW_REPORT']">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                Generate Report
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- begin: Filtration form -->
+        <div class="row form-row mb-4">
+            <div class="col-md-4">
+                <label class="font-size-h7  text-dark">Search</label>
+                <input type="text" class="form-control" name="searchText" placeholder="Search"
+                    [(ngModel)]="searchParam" />
+            </div>
+            <div class="row col-md-8" [formGroup]="filterForm">
+                <div class="col">
+                    <label class="font-size-h7  text-dark">Club Member</label>
+                    <select name="firstName" id="_id" class="form-control" formControlName="owner"
+                        (change)="filterChange($event)">
+                        <option value=null disabled selected>Select Owner</option>
+                        <option *ngFor="let o of ownerList" [value]="o._id">{{o.firstName}} {{o.lastName}}</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="font-size-h7  text-dark">Farm</label>
+                    <select name="firstName" id="_id" class="form-control" formControlName="farmer"
+                        (change)="filterChange($event)">
+                        <option value=null disabled selected>Select Farm</option>
+                        <option *ngFor="let f of farmList" [value]="f._id">{{f.farmName}}</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="font-size-h7  text-dark">Pond</label>
+                    <select name="firstName" id="_id" class="form-control" formControlName="pond"
+                        (change)="filterChange($event)">
+                        <option value=null disabled selected>Select Pond</option>
+                        <option *ngFor="let p of pondList" [value]="p._id">{{p.pondNo}}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!-- end: Filtration form -->
+
+        <!-- begin:Table -->
+        <div class="table-responsive angular-bootstrap-table">
+            <table class="table table-head-custom table-vertical-center overflow-hidden">
+                <thead>
+                    <th>Harvest Date</th>
+                    <th>Harvest Type</th>
+                    <th>Harvest Qty</th>
+                    <th>Harvest AWB</th>
+                    <th>No.of PL's Harvested</th>
+                    <th>sales price</th>
+                    <th>Status</th>
+                    <th>Created Date</th>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let harvest of (harvestDetails| slice: (page-1) * pageSize : (page-1) * pageSize + pageSize) | filter:searchParam; let i = index ">
+                        <td>{{ harvest?.harvestDate }}</td>
+                        <td>{{ harvest?.harvestType }}</td>
+                        <td>{{ harvest?.harvestQuantity }}</td>
+                        <td>{{ harvest?.harvestAWB }}</td>
+                        <td>{{ harvest?.harvestQuantity / harvest?.harvestAWB }}</td>
+                        <td>{{ harvest?.harvestSalePrice }}</td>
+                        <td>
+                            <span [ngClass]="harvest?.isActive ? 'active' : 'inactive'"></span>
+                        </td>
+                        <td>{{ harvest?.createdOn | date: 'EEEE, MMMM d, y' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-center" *ngIf="harvestDetails && harvestDetails.length === 0">
+                <span>No records found</span>
+            </div>
+            <ngb-pagination [collectionSize]="harvestDetails && harvestDetails.length ? harvestDetails.length: 0"
+                [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

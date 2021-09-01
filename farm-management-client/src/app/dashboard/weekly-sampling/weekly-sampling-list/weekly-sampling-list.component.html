@@ -1,0 +1,146 @@
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Weekly Sampling</h3>
+        </div>
+        <div class="card-toolbar">
+            <a type="button" class="btn btn-primary" (click)="addNewWeeklySampling()" *ngxPermissionsOnly="['ADD_WEEKLY_SAMPLING']">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                Add Weekly Sampling
+            </a>
+            <!-- <a type="button" class="btn btn-success ml-2" (click)="importWeeklySampling()">
+                <i class="fa fa-files-o" aria-hidden="true"></i>
+                Import Weekly Sampling
+            </a> -->
+            <a type="button" class="btn btn-danger ml-2" (click)="deleteSelected()" *ngxPermissionsOnly="['DELETE_WEEKLY_SAMPLINGS']">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+                Delete Weekly Sampling
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- begin: Filtration form -->
+        <div class="form form-label-right">
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <div class="col-lg-5">
+                        <input type="text" class="form-control" name="searchText" placeholder="Search"
+                            [(ngModel)]="filterParam" /><small class="form-text text-muted"><b>Search</b></small>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-flex justify-content-lg-end justify-content-md-center justify-content-sm-start">
+                    <!-- begin: Grouping -->
+                    <div>
+                        <button type="button" class="btn btn-light-primary font-weight-bolder font-size-sm mr-2" (click)="resetFilters()">
+                            <i class="fa fa-filter"></i>
+                            <span>Reset Filters</span>
+                        </button>
+                        <button type="button" class="btn btn-light-primary font-weight-bolder font-size-sm mr-2"
+                            (click)="exportWeeklySampling(exportTypes.PDF)" *ngxPermissionsOnly="['DOWNLOAD_PDF_WEEKLY_SAMPLING']">
+                            <i class="fa fa-file-text"></i>
+                            <span>PDF</span>
+                        </button>
+                        <button type="button" class="btn btn-light-primary font-weight-bolder font-size-sm mr-2"
+                            (click)="exportWeeklySampling(exportTypes.CSV)" *ngxPermissionsOnly="['DOWNLOAD_EXCEL_WEEKLY_SAMPLING']">
+                            <i class="fa fa-table"></i>
+                            <span>CSV</span>
+                        </button>
+                    </div>
+                    <!-- end: Grouping -->
+                </div>
+            </div>
+        </div>
+        <div class="form-row mb-4" [formGroup]="filterForm">
+            <div class="col">
+                <label class="font-size-h7  text-dark">Club Member</label>
+                <select name="firstName" id="_id" class="form-control" formControlName="owner" (change)="filterChange($event)">
+                    <option value=null disabled selected>Select Owner</option>
+                    <option *ngFor="let o of initialData.ownerList" [value]="o._id">{{o.firstName}} {{o.lastName}}</option>
+                </select>
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark">Farm</label>
+                <select name="firstName" id="_id" class="form-control" formControlName="farmer" (change)="filterChange($event)">
+                    <option value=null disabled selected>Select Farm</option>
+                    <option *ngFor="let f of initialData.farmList" [value]="f._id">{{f.farmName}}</option>
+                </select>
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark">Pond</label>
+                <select name="firstName" id="_id" class="form-control" formControlName="pond" (change)="filterChange($event)">
+                    <option value=null disabled selected>Select Pond</option>
+                    <option *ngFor="let p of initialData.pondList" [value]="p._id">{{p.pondNo}}</option>
+                </select>
+            </div>
+        </div>
+        <!-- end: Filtration form -->
+
+        <!-- begin:Table -->
+        <div class="table-responsive angular-bootstrap-table">
+            <table class="table table-head-custom table-vertical-center overflow-hidden">
+                <thead>
+                    <th class="selection-cell-header" data-row-selection="true">
+                        <label class="checkbox checkbox-single">
+                            <input type="checkbox" [(ngModel)]="isAllChecked" (ngModelChange)="onSelectionChange()" />
+                            <span></span>
+                        </label>
+                    </th>
+                    <th> Doc </th>
+                    <th> Farmer </th>
+                    <th> Owner Name </th>
+                    <th> Total Weight </th>
+                    <th> Total Shrimp </th>
+                    <th> AWB </th>
+                    <th> Previous AWB </th>
+                    <th> Gain in Weight </th>
+                    <th> Expected Survival Percentage </th>
+                    <!-- <th> Created On </th> -->
+                    <th> Action </th>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let weeklySample of (weelySamplingList | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize) | filter:filterParam;let i = index">
+                        <td class="selection-cell">
+                            <label class="checkbox checkbox-single">
+                                <input type="checkbox" [checked]="weeklySample.isChecked"
+                                    (change)="singleSelectionChange(i)" />
+                                <span></span>
+                            </label>
+                        </td>
+                        <td>{{ weeklySample?.dateOfCulture }}</td>
+                        <td>{{ weeklySample?.farmer?.farmName }}</td>
+                        <td>{{ weeklySample?.owner?.firstName }}</td>
+                        <td>{{ weeklySample?.totalWeight }}</td>
+                        <td>{{ weeklySample?.totalShrimp }}</td>
+                        <td>{{ weeklySample?.averageBodyWeight }}</td>
+                        <td>{{ weeklySample?.previousAwb }}</td>
+                        <td>{{ weeklySample?.gainInWeight }}</td>
+                        <td>{{ weeklySample?.expectedSurvivalPercentage }}</td>
+                        <!-- <td>{{ weeklySample?.createdOn | date: 'EEEE, MMMM d, y' }}</td> -->
+                        <td>
+                            <a title=" Edit Role" class="btn btn-icon btn-light btn-hover-primary btn-sm"
+                                (click)="updateWeelySampling(weeklySample)" *ngxPermissionsOnly="['EDIT_WEEKLY_SAMPLING']">
+                                <span [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'"
+                                    class="svg-icon svg-icon-md svg-icon-primary">
+                                </span>
+                            </a>
+                            <a title="Delete item" class="btn btn-icon btn-light btn-hover-danger btn-sm ml-2"
+                                (click)="deleteWeeklySamplingRecord(weeklySample?._id)" *ngxPermissionsOnly="['DELETE_WEEKLY_SAMPLING']">
+                                <span [inlineSVG]="'./assets/media/svg/icons/General/Trash.svg'"
+                                    class="svg-icon svg-icon-md svg-icon-danger">
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-center" *ngIf="weelySamplingList && weelySamplingList.length === 0">
+                <span>No records found</span>
+            </div>
+            <ngb-pagination
+                [collectionSize]="weelySamplingList && weelySamplingList.length ? weelySamplingList.length: 0"
+                [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

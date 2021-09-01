@@ -1,0 +1,43 @@
+.auth-wrapper {
+    height: 100vh;
+    width: 100%;
+    background-color: #fff;
+    display: grid;
+    grid-template-columns: 35% 65%;
+    grid-template-rows: 1fr;
+
+    &__background {
+        grid-column: 1/2;
+        grid-row: 1/-1;
+        background-color: #f2c98a;
+
+        .application-header {
+            width: 100%;
+            height: 35%;
+        }
+
+        .application-header-background {
+            width: 100%;
+            height: 65%;
+
+            img {
+                height: 50%;
+            }
+        }
+    }
+
+    &__content {
+        grid-column: 2/-1;
+        grid-row: 1/-1;
+        padding: 10rem;
+
+        &--login {
+            div.form-group {
+                width: 100%;
+                &:last-child {
+                    margin-top: 1rem;
+                }
+            }
+        }
+    }
+}

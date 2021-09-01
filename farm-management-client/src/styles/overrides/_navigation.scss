@@ -1,0 +1,19 @@
+.header-nav > {
+    svg {
+        g {
+            [fill] {
+                transition: fill 0.3s ease !important;
+                fill: #ECECEC !important;
+            }
+        }
+
+        &:hover {
+            g {
+                [fill] {
+                    transition: fill 0.3s ease !important;
+                    fill: #3699FF !important;
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,111 @@
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">User Management</h3>
+        </div>
+        <div class="card-toolbar">
+            <a type="button" class="btn btn-primary" (click)="addNewUser()">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                Add User
+            </a>
+            <a type="button" class="btn btn-danger ml-2" (click)="deleteSelected()">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+                Delete Users
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- begin: Filtration form -->
+        <div class="form form-label-right">
+            <div class="form-group row">
+                <div class="col-lg-6">
+                    <div class="col-lg-5">
+                        <input type="text" class="form-control" name="searchText" placeholder="Search"
+                            [(ngModel)]="searchParam" /><small class="form-text text-muted"><b>Search</b></small>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 d-flex justify-content-lg-end justify-content-md-center justify-content-sm-start">
+                    <!-- begin: Grouping -->
+                    <div>
+                        <button type="button" class="btn btn-light-primary font-weight-bolder font-size-sm mr-2"
+                            (click)="exportUserList(exportTypes.PDF)">
+                            <i class="fa fa-file-text"></i>
+                            <span>PDF</span>
+                        </button>
+                        <button type="button" class="btn btn-light-primary font-weight-bolder font-size-sm mr-2"
+                            (click)="exportUserList(exportTypes.CSV)">
+                            <i class="fa fa-table"></i>
+                            <span>CSV</span>
+                        </button>
+                    </div>
+                    <!-- end: Grouping -->
+                </div>
+            </div>
+        </div>
+        <!-- end: Filtration form -->
+
+        <!-- begin:Table -->
+        <div class="table-responsive angular-bootstrap-table">
+            <table class="table table-head-custom table-vertical-center overflow-hidden">
+                <thead>
+                    <th class="selection-cell-header" data-row-selection="true">
+                        <label class="checkbox checkbox-single">
+                            <input type="checkbox" [(ngModel)]="isAllChecked" [checked]="isAllChecked"
+                                (ngModelChange)="onSelectionChange()" />
+                            <span></span>
+                        </label>
+                    </th>
+                    <th> First Name </th>
+                    <th> Last Name </th>
+                    <th> Email </th>
+                    <th> NIC </th>
+                    <th> Address </th>
+                    <th> Contact No </th>
+                    <th> Created Date </th>
+                    <th> Status </th>
+                    <th> Actions </th>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let user of (userList | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize) | filter:searchParam; let i = index ">
+                        <td class="selection-cell">
+                            <label class="checkbox checkbox-single">
+                                <input type="checkbox" [checked]="user?.isChecked"
+                                    (change)="singleSelectionChange(i)" />
+                                <span></span>
+                            </label>
+                        </td>
+                        <td>{{ user?.firstName }}</td>
+                        <td>{{ user?.lastName }}</td>
+                        <td>{{ user?.userEmail }}</td>
+                        <td>{{ user?.nic }}</td>
+                        <td>{{ user?.userAddress }}</td>
+                        <td>{{ user?.contact }}</td>
+                        <td>{{ user?.createdOn | date: 'EEEE, MMMM d, y' }}</td>
+                        <td>
+                            <span [ngClass]="user?.isActive ? 'active' : 'inactive'"></span>
+                        </td>
+                        <td>
+                            <a title="Edit user" class="btn btn-icon btn-light btn-hover-primary btn-sm"
+                                (click)="editUser(user)">
+                                <span [inlineSVG]="'./assets/media/svg/icons/Communication/Write.svg'"
+                                    class="svg-icon svg-icon-md svg-icon-primary">
+                                </span>
+                            </a>
+                            <a title="Delete item" class="btn btn-icon btn-light btn-hover-danger btn-sm ml-2"
+                                (click)="deleteUser(user._id)">
+                                <span [inlineSVG]="'./assets/media/svg/icons/General/Trash.svg'"
+                                    class="svg-icon svg-icon-md svg-icon-danger">
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <ngb-pagination [collectionSize]="userList && userList.length ? userList.length: 0" [(page)]="page"
+                [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,79 @@
+<div class="modal-header">
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="modal-title mb-1">Register User</h4>
+            <p class="mb-0">The field labels marked with <span class="required"></span> are required input fields</p>
+        </div>
+    </div>
+</div>
+<div class="modal-body mb-0">
+    <div [formGroup]="registerForm">
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7 text-dark required">First Name</label>
+                <input type="text" class="form-control" placeholder="First name" formControlName="firstName">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark">Middle Name</label>
+                <input type="text" class="form-control" placeholder="Middle name" formControlName="middleName">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Last Name</label>
+                <input type="text" class="form-control" placeholder="Last name" formControlName="lastName">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Contact</label>
+                <input type="text" class="form-control" placeholder="Contact" formControlName="contact"
+                minlength="10" maxlength="10" onCopy="return false" onDrag="return false" onDrop="return false"
+                onPaste="return false" (keypress)="onKeyPressChanges($event)">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">NIC</label>
+                <input type="text" class="form-control" placeholder="Nic" formControlName="nic">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Address</label>
+                <input type="text" class="form-control" placeholder="Address" formControlName="userAddress">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark">Passport ID</label>
+                <input type="text" class="form-control" placeholder="Passport ID" formControlName="passpordId">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Email Address</label>
+                <input type="email" class="form-control mb-4" placeholder="E-mail" formControlName="userEmail">
+                <div *ngIf="registerForm.controls.userEmail.invalid && registerForm.controls.userEmail.touched " class="text-danger">
+                    invalid email format
+                </div>
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">User Name</label>
+                <input type="text" class="form-control mb-4" placeholder="User Name" formControlName="userName">
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Password</label>
+                <input type="password" class="form-control mb-4" placeholder="Password" formControlName="password">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Re-enter Password</label>
+                <input type="password" class="form-control mb-4" placeholder="Re-enter Password" formControlName="rePassword">
+            </div>
+            <div class="col">              
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button type="button" class="btn btn-primary" [disabled]="registerForm.invalid" (click)="registerUser()">Sign Up</button>
+</div>

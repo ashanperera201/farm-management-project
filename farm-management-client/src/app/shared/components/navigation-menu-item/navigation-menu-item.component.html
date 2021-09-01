@@ -1,0 +1,41 @@
+<div id="kt_aside_menu" class="aside-menu" data-menu-vertical="1" [attr.data-menu-scroll]="asideMenuScroll"
+    [attr.data-menu-dropdown]="asideMenuDropdown" data-menu-dropdown-timeout="500">
+    <ul class="menu-nav">
+        <li *ngFor="let menu of menuItems;let i = index" class="{{menu?.classes}} {{menu?.activeClass}}"
+            (click)="onMenuItemClick(i)">
+
+            <h4 class="menu-text" *ngIf="menu?.isMenuHeading">{{menu?.displayName}}</h4>
+            <i class="menu-icon flaticon-more-v2" *ngIf="menu?.isMenuHeading"></i>
+
+            <a class="menu-link" (click)="proceedNavigation(menu)" routerLinkActive="active"
+                *ngIf="!menu?.isMenuHeading && menu?.subItems.length === 0">
+                <span [inlineSVG]="menu?.svgIconPath" class="svg-icon menu-icon"></span>
+                <span class="menu-text">{{menu?.displayName}}</span>
+                <i class="menu-arrow" *ngIf="menu?.subItems.length > 0"></i>
+            </a>
+
+            <a class="menu-link" (click)="proceedNavigation(menu)"
+                *ngIf="!menu?.isMenuHeading && menu?.subItems.length > 0">
+                <span [inlineSVG]="menu?.svgIconPath" class="svg-icon menu-icon"></span>
+                <span class="menu-text">{{menu?.displayName}}</span>
+                <i class="menu-arrow" *ngIf="menu?.subItems.length > 0"></i>
+            </a>
+
+            <div class="menu-submenu">
+                <i class="menu-arrow"></i>
+                <ul class="menu-subnav">
+                    <!-- begin::3 Level -->
+                    <li class="menu-item" *ngFor="let subItem of menu?.subItems" aria-haspopup="true"
+                        routerLinkActive="menu-item-active">
+                        <a class="menu-link" (click)="proceedNavigation(subItem)" routerLinkActive="active">
+                            <i class="menu-bullet menu-bullet-dot">
+                                <span></span>
+                            </i>
+                            <span class="menu-text">{{subItem?.displayName}}</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </li>
+    </ul>
+</div>

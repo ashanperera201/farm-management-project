@@ -1,0 +1,68 @@
+<div class="wrapper">
+  <app-side-navigation [open]="true" [mode]="navigationModes.side" #navigationRef>
+    <app-navigation-header (sideButton)="navigationRef.toggle()"></app-navigation-header>
+    <app-navigation-menu-item></app-navigation-menu-item>
+  </app-side-navigation>
+  <perfect-scrollbar [config]="config">
+    <main>
+      <app-navigation-content [sideNavigation]="navigationRef">
+        <div class="app-content">
+          <div class="app-content--toolbar header">
+            <div class="d-flex align-items-stretch justify-content-between container-fluid">
+              <div class="header-menu-wrapper header-menu-wrapper-left">
+                <div class="header-menu header-menu-mobile header-menu-layout-default">
+                  <ul class="menu-nav">
+                    <li class="menu-item menu-item-rel menu-item-active">
+                      <a href="" class="active menu-link">Dashboard</a>
+                    </li>
+                    <li class="menu-item menu-item-rel">
+                      <a href="" class="menu-link">Builder</a>
+                    </li>
+                    <li class="menu-item menu-item-rel">
+                      <a href="" class="menu-link">About us</a>
+                    </li>
+                    <li class="menu-item menu-item-rel">
+                      <a href="" class="menu-link">Payments</a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="topbar">
+                <div placement="bottom-right" class="dropdown" ng-reflect-placement="bottom-right"
+                  ng-reflect-auto-close="true">
+                  <div ngbdropdowntoggle="" data-toggle="dropdown" data-offset="10px,0px"
+                    class="dropdown-toggle topbar-item" aria-expanded="false">
+                    <div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1"><img alt="language"
+                        class="h-25px w-25px rounded" src="./assets/media/svg/flags/127-sri-lanka.svg"></div>
+                  </div>
+                </div>
+                <div class="topbar-item">
+                  <div id="kt_quick_user_toggle"
+                    class="btn btn-icon btn-icon-mobile w-auto btn-clean d-flex align-items-center btn-lg px-2">
+                    <span class="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hi,</span>
+                    <span
+                      class="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-3">{{loggedUserName}}</span>
+                    <span class="symbol symbol-lg-35 symbol-25 symbol-light-success"><span
+                        class="symbol-label font-size-h5 font-weight-bold"><i class="fas fa-user"></i></span></span>
+                  </div>
+                </div>
+                <div placement="bottom-right" class="dropdown" ng-reflect-placement="bottom-right"
+                  ng-reflect-auto-close="true" (click)="signOut()">
+                  <div ngbdropdowntoggle="" data-toggle="dropdown" data-offset="10px,0px"
+                    class="dropdown-toggle topbar-item" aria-expanded="false">
+                    <div class="btn btn-icon btn-clean btn-dropdown btn-lg mr-1">
+                      <i class="fas fa-sign-out-alt"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="app-content--sub-section">
+            <router-outlet></router-outlet>
+          </div>
+        </div>
+      </app-navigation-content>
+    </main>
+  </perfect-scrollbar>
+</div>

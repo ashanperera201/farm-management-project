@@ -1,0 +1,68 @@
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Weekly Application Report</h3>
+        </div>
+        <div class="card-toolbar">
+            <button type="button" class="btn btn-success" (click)="generateReport()" *ngxPermissionsOnly="['SHOW_REPORT']">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                Generate Report
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- begin: Filtration form -->
+        <div class="form form-label-right">
+            <div class="form-group">
+                <div class="col-lg-4 row">
+                    <div class="col">
+                        <input type="text" class="form-control" name="searchText" placeholder="Search"
+                            [(ngModel)]="searchParam" />
+                        <small class="form-text text-muted">
+                            <b>Search</b>
+                        </small>
+                    </div>
+                    <!-- <div class="col">
+                        <ng-select [items]="test" bindLabel="name" bindValue="id" placeholder="Sample search">
+                        </ng-select>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <!-- end: Filtration form -->
+
+        <!-- begin:Table -->
+        <div class="table-responsive angular-bootstrap-table">
+            <table class="table table-head-custom table-vertical-center overflow-hidden">
+                <thead>
+                    <th> Week Number </th>
+                    <th> Type of Application </th>
+                    <th> Unit </th>
+                    <th> Number of Units </th>
+                    <th> Status </th>
+                    <th> Created On </th>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let weeklyApplication of (weeklyApplications| slice: (page-1) * pageSize : (page-1) * pageSize + pageSize) | filter:searchParam; let i = index ">
+                        <td>{{weeklyApplication?.weekNumber}}</td>
+                        <td>{{weeklyApplication?.application?.applicationType}}</td>
+                        <td>{{weeklyApplication?.unit}}</td>
+                        <td>{{weeklyApplication?.numberOfUnit}}</td>
+                        <td>
+                            <span [ngClass]="weeklyApplication?.isActive ? 'active' : 'inactive'"></span>
+                        </td>
+                        <td>{{ weeklyApplication?.createdOn | date: 'EEEE, MMMM d, y' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-center" *ngIf="weeklyApplications && weeklyApplications.length === 0">
+                <span>No records found</span>
+            </div>
+            <ngb-pagination
+                [collectionSize]="weeklyApplications && weeklyApplications.length ? weeklyApplications.length: 0"
+                [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

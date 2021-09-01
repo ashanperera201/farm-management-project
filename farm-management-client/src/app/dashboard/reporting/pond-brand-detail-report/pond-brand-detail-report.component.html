@@ -1,0 +1,63 @@
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Brand Detail Report</h3>
+        </div>
+        <div class="card-toolbar">
+            <button type="button" class="btn btn-success" (click)="generateReport()" *ngxPermissionsOnly="['SHOW_REPORT']">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                Generate Report
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- begin: Filtration form -->
+        <div class="form form-label-right">
+            <div class="form-group">
+                <div class="col-lg-8 row">
+                    <div class="col-5">
+                        <input type="text" class="form-control" name="searchText" placeholder="Search"
+                            [(ngModel)]="searchParam" />
+                        <small class="form-text text-muted">
+                            <b>Search</b>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end: Filtration form -->
+
+        <!-- begin:Table -->
+        <div class="table-responsive angular-bootstrap-table">
+            <table class="table table-head-custom table-vertical-center overflow-hidden">
+                <thead>
+                    <th> Name of Brand </th>
+                    <th> Grades </th>
+                    <th> Shrimp Weight </th>
+                    <th> Price / Kg </th>
+                    <th> Status </th>
+                    <th> Created Date </th>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let brand of (brandDetailList | slice: (page-1) * pageSize : (page-1) * pageSize + pageSize) | filter:searchParam; let i = index ">
+                        <td>{{ brand?.brandName }}</td>
+                        <td>{{ brand?.grades }}</td>
+                        <td>{{ brand?.shrimpWeight }}</td>
+                        <td>{{ brand?.price }}</td>
+                        <td>
+                            <span [ngClass]="brand?.isActive ? 'active' : 'inactive'"></span>
+                        </td>
+                        <td>{{ brand?.createdOn | date: 'EEEE, MMMM d, y' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-center" *ngIf="brandDetailList && brandDetailList.length === 0">
+                <span>No records found</span>
+            </div>
+            <ngb-pagination [collectionSize]="brandDetailList && brandDetailList.length ? brandDetailList.length: 0"
+                [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,73 @@
+<div class="card card-custom">
+    <div class="card-header">
+        <div class="card-title">
+            <h3 class="card-label">Weekly Sampling Report</h3>
+        </div>
+        <div class="card-toolbar">
+            <button type="button" class="btn btn-success" (click)="generateReport()" *ngxPermissionsOnly="['SHOW_REPORT']">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                Generate Report
+            </button>
+        </div>
+    </div>
+    <div class="card-body">
+        <!-- begin: Filtration form -->
+        <div class="form form-label-right">
+            <div class="form-group">
+                <div class="col-lg-4 row">
+                    <div class="col">
+                        <input type="text" class="form-control" name="searchText" placeholder="Search"
+                            [(ngModel)]="searchParam" />
+                        <small class="form-text text-muted">
+                            <b>Search</b>
+                        </small>
+                    </div>
+                    <!-- <div class="col">
+                        <ng-select [items]="test" bindLabel="name" bindValue="id" placeholder="Sample search">
+                        </ng-select>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+        <!-- end: Filtration form -->
+
+        <!-- begin:Table -->
+        <div class="table-responsive angular-bootstrap-table">
+            <table class="table table-head-custom table-vertical-center overflow-hidden">
+                <thead>
+                    <th> DOC </th>
+                    <th> Total Weight </th>
+                    <th> Total Shrimp </th>
+                    <th> AWB </th>
+                    <th> Previous AWB </th>
+                    <th> Gain in Weight </th>
+                    <th> Expected Survival % </th>
+                    <th> Status </th>
+                    <th> Created On </th>
+                </thead>
+                <tbody>
+                    <tr
+                        *ngFor="let sampling of (weeklySamplings| slice: (page-1) * pageSize : (page-1) * pageSize + pageSize) | filter:searchParam; let i = index ">
+                        <td>{{ sampling?.dateOfCulture }}</td>
+                        <td>{{ sampling?.totalWeight }}</td>
+                        <td>{{ sampling?.totalShrimp }}</td>
+                        <td>{{ sampling?.averageBodyWeight }}</td>
+                        <td>{{ sampling?.previousAwb }}</td>
+                        <td>{{ sampling?.gainInWeight }}</td>
+                        <td>{{ sampling?.expectedSurvivalPercentage }}</td>
+                        <td>
+                            <span [ngClass]="sampling?.isActive ? 'active' : 'inactive'"></span>
+                        </td>
+                        <td>{{ sampling?.createdOn | date: 'EEEE, MMMM d, y' }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-center" *ngIf="weeklySamplings && weeklySamplings.length === 0">
+                <span>No records found</span>
+            </div>
+            <ngb-pagination [collectionSize]="weeklySamplings && weeklySamplings.length ? weeklySamplings.length: 0"
+                [(page)]="page" [maxSize]="5" [rotate]="true" [ellipses]="false" [boundaryLinks]="true">
+            </ngb-pagination>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,130 @@
+<div class="row">
+    <div class="col-md-3">
+        <div class="card-height bg-light-primary rounded-xl" *ngxPermissionsOnly="['WIDGET_CLUB_MEMBERS_COUNT']">
+            <span [inlineSVG]="'./assets/media/svg/icons/Communication/Add-user.svg'"
+                class="card-icon svg-icon svg-icon-5x svg-icon-primary d-block my-2"></span>
+            <div class="mt-3 d-flex justify-content-between">
+                <a class="card-text text-primary font-weight-bold font-size-h6">
+                    Club Members Count
+                </a>
+                <div class="pr-4">
+                    <span class="card-result-text">{{clubMemberCount}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-height bg-light-warning rounded-xl" *ngxPermissionsOnly="['WIDGET_FARMS_COUNT']">
+            <span [inlineSVG]="'./assets/media/svg/icons/Media/Equalizer.svg'"
+                class="card-icon svg-icon svg-icon-5x svg-icon-warning d-block my-2"></span>
+            <div class="mt-3 d-flex justify-content-between">
+                <a class="card-text text-warning font-weight-bold font-size-h6 mt-2">
+                    Farms Count
+                </a>
+                <div class="pr-4">
+                    <span class="card-result-text">{{farmsCount}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-height bg-light-danger rounded-xl" *ngxPermissionsOnly="['WIDGET_PONDS_COUNT']">
+            <span [inlineSVG]="'./assets/media/svg/icons/Design/Layers.svg'"
+                class="card-icon svg-icon svg-icon-5x svg-icon-danger d-block my-2"></span>
+            <div class="mt-3 d-flex justify-content-between">
+                <a class="card-text text-danger font-weight-bold font-size-h6 mt-2">
+                    Ponds Count
+                </a>
+                <div class="pr-4">
+                    <span class="card-result-text">{{pondsCount}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card-height bg-light-success rounded-xl" *ngxPermissionsOnly="['WIDGET_APPLICATIONS_COUNT']">
+            <span [inlineSVG]="
+            './assets/media/svg/icons/Communication/Urgent-mail.svg'
+          " class="card-icon svg-icon svg-icon-5x svg-icon-success d-block my-2"></span>
+
+            <div class="mt-3 d-flex justify-content-between">
+                <a class="card-text text-success font-weight-bold font-size-h6 mt-2">
+                    Applications Count
+                </a>
+                <div class="pr-4">
+                    <span class="card-result-text">{{ApplicationsCount}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" *ngxPermissionsOnly="['WIDGET_PERCENTAGE_OF_FEEDING']">
+    <div class="col-md-12">
+        <div class="card card-custom">
+            <div class="card-header border-0 py-5">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label font-weight-bolder text-dark">Percentage of Feeding</span>
+                    <span class="text-muted mt-3 font-weight-bold font-size-sm">More than
+                        {{percentageFeedingList?.length}}+
+                        new
+                        records</span>
+                </h3>
+                <div class="card-toolbar"  *ngxPermissionsOnly="['WIDGET_VIEW_CLUB_MEMBER_DETAILS']">
+                    <a class="btn btn-success font-weight-bolder font-size-sm">
+                        <span [inlineSVG]="'./assets/media/svg/icons/Communication/Archive.svg'"
+                            class="svg-icon svg-icon-md svg-icon-white">
+                        </span>
+                        View Club Details
+                    </a>
+                </div>
+            </div>
+            <div class="card-body py-0 mt-4">
+                <app-club-view-widget [percentageFeedingList]="percentageFeedingList"></app-club-view-widget>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row"  *ngxPermissionsOnly="['WIDGET_DAILY_PIE_CHARTS']">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="card card-custom">
+            <div class="card-header border-0">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label font-weight-bolder text-dark">Daily Chart Updates</span>
+                </h3>
+            </div>
+            <div class="card-body py-0 d-flex justify-content-around">
+                <div id="chart-1" *ngIf="pondChartConfig">
+                    <apx-chart [series]="pondChartConfig?.series" [chart]="pondChartConfig?.chart"
+                        [title]="{ text:'Pond wise cost'}" [labels]="pondChartConfig?.labels"
+                        [responsive]="pondChartConfig?.responsive">
+                    </apx-chart>
+                </div>
+                <div id="chart-2" *ngIf="farmChartConfig">
+                    <apx-chart [series]="farmChartConfig?.series" [chart]="farmChartConfig?.chart"
+                        [title]="{ text:'Farm wise cost'}" [labels]="farmChartConfig?.labels"
+                        [responsive]="farmChartConfig?.responsive">
+                    </apx-chart>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row"  *ngxPermissionsOnly="['WIDGET_SALES_PRICE']">
+    <div class="col-lg-4 col-md-12 col-sm-12">
+        <div class="card card-custom">
+            <div class="card-header border-0">
+                <h3 class="card-title align-items-start flex-column">
+                    <span class="card-label font-weight-bolder text-dark">Sales Price</span>
+                    <span class="text-muted mt-3 font-weight-bold font-size-sm">More than
+                        {{salesPriceList?.length}}+ new records</span>
+                </h3>
+            </div>
+            <div class="card-body py-0">
+                <app-sales-widget [salesPriceList]="salesPriceList"></app-sales-widget>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,100 @@
+<div class="modal-header">
+  <div class="row">
+    <div class="col-md-12">
+      <h4 class="modal-title mb-1">{{headerText}}</h4>
+      <p *ngIf="!isEditMode">The field labels marked with <span class="required"></span> are required input fields</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-body mb-0">
+  <div [formGroup]="addWeeklySamplingForm">
+    <div class="form-row mb-4">
+      <div class="col">
+        <label class="font-size-h7  text-dark required">Date</label>
+        <div class="input-group">
+          <input class="form-control" placeholder="yyyy-mm-dd" name="dp" placeholder="Date"
+            formControlName="samplingDate" ngbDatepicker #d="ngbDatepicker" [minDate]="modelSampling">
+          <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+            <i class="far fa-calendar-alt"></i>
+          </button>
+        </div>
+      </div>
+      <div class="col">
+        <label class="font-size-h7  text-dark required">Owner</label>
+        <select name="owner" id="owner" formControlName="owner" class="form-control" (change)="ownerOnChange()">
+          <option value=null disabled selected>Select Owner</option>
+          <option *ngFor="let o of initialData?.ownerList" [value]="o._id">{{o.firstName}} {{o.lastName}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row mb-4">
+      <div class="col">
+        <label class="font-size-h7  text-dark required">Farm</label>
+        <select name="farm" id="farm" formControlName="farmer" class="form-control" (change)="farmOnChange()">
+          <option value=null disabled selected>Select Farm</option>
+          <option *ngFor="let f of farmList" [value]="f._id">{{f.farmName}}</option>
+        </select>
+      </div>
+      <div class="col">
+        <label class="font-size-h7  text-dark required">Pond</label>
+        <select name="farm" id="farm" formControlName="pond" class="form-control">
+          <option value=null disabled selected>Select Pond</option>
+          <option *ngFor="let pond of pondList" [value]="pond._id">{{pond.pondNo}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row mb-4">
+      <div class="col">
+        <label class="font-size-h7  text-dark required">Date of Culture</label>
+        <input type="text" class="form-control" placeholder="Date of Culture" formControlName="dateOfCulture">
+      </div>
+      <div class="col">
+        <label class="font-size-h7  text-dark required">Total Weight</label>
+        <input type="text" class="form-control" placeholder="Total Weight" formControlName="totalWeight" maxlength="5"
+          (keyup)="calculateAwb()" onCopy="return false" onDrag="return false" onDrop="return false"
+          onPaste="return false" (keypress)="onKeyPressChanges($event)">
+      </div>
+    </div>
+    <div class="form-row mb-4">
+      <div class="col">
+        <label class="font-size-h7  text-dark required">Total Shrimp</label>
+        <input type="text" class="form-control" placeholder="Total Shrimp" formControlName="totalShrimp" maxlength="5"
+          (keyup)="calculateAwb()" onCopy="return false" onDrag="return false" onDrop="return false"
+          onPaste="return false" (keypress)="onKeyPressChanges($event)">
+      </div>
+      <div class="col">
+        <label class="font-size-h7  text-dark required">Average Body Weight</label>
+        <input type="text" class="form-control" placeholder="Average Body Weight" formControlName="averageBodyWeight"
+          maxlength="5" onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false"
+          (keypress)="onKeyPressChanges($event)" />
+      </div>
+    </div>
+    <div class="form-row mb-4">
+      <div class="col">
+        <label class="font-size-h7  text-dark">Previous AWB</label>
+        <input type="text" class="form-control" placeholder="Previous AWB" formControlName="previousAwb">
+      </div>
+      <div class="col">
+        <label class="font-size-h7  text-dark">Gain in Weight</label>
+        <input type="text" class="form-control" placeholder="Gain in Weight" formControlName="gainInWeight"
+          maxlength="5" onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false"
+          (keypress)="onKeyPressChanges($event)">
+      </div>
+    </div>
+    <div class="form-row mb-4">
+      <div class="col">
+        <label class="font-size-h7  text-dark required">Expected Survival Percentage</label>
+        <input type="text" class="form-control" placeholder="Expected Survival Percentage"
+          formControlName="expectedSurvivalPercentage" maxlength="5" onCopy="return false" onDrag="return false"
+          onDrop="return false" onPaste="return false" (keypress)="onKeyPressChanges($event)">
+      </div>
+      <div class="col"></div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+  <button type="button" class="btn btn-primary" [disabled]="addWeeklySamplingForm.invalid"
+    (click)="saveOrUpdateWeeklySampling()">{{saveButtonText}}</button>
+</div>

@@ -1,0 +1,73 @@
+<div class="modal-header">
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="modal-title mb-1">{{headerText}}</h4>
+            <p *ngIf="!isEditMode">The field labels marked with <span class="required"></span> are required input fields
+            </p>
+        </div>
+    </div>
+</div>
+
+<div class="modal-body mb-0">
+    <div [formGroup]="addDailyFeedForm">
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Club Member</label>
+                <select name="firstName" id="_id" class="form-control" formControlName="owner" (change)="ownerOnChange()">
+                    <option value=null disabled selected>Select Owner</option>
+                    <option *ngFor="let o of ownerList" [value]="o._id">{{o.firstName}} {{o.lastName}}</option>
+                </select>
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Farm</label>
+                <select name="firstName" id="_id" class="form-control" formControlName="farmer" (change)="farmOnChange()">
+                    <option value=null disabled selected>Select Farm</option>
+                    <option *ngFor="let f of farmList" [value]="f._id">{{f.farmName}}</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-row mb-4">
+        <div class="col">
+            <label class="font-size-h7  text-dark required">Pond</label>
+            <select name="firstName" id="_id" class="form-control" formControlName="pond">
+                <option value=null disabled selected>Select Pond</option>
+                <option *ngFor="let p of pondList" [value]="p._id">{{p.pondNo}}</option>
+            </select>
+        </div>
+        <div class="col">
+            <label class="font-size-h7  text-dark required">Date</label>
+            <div class="input-group">
+              <input class="form-control" placeholder="yyyy-mm-dd" name="dp" formControlName="dailyFeedDate"
+                placeholder="Date" ngbDatepicker #d="ngbDatepicker">
+              <div class="input-group-append">
+                <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">
+                  <i class="far fa-calendar-alt"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Calculated Daily Feed</label>
+                <input type="text" class="form-control" formControlName="calculatedDailyFeed" readonly>
+            </div>
+            <div class="col">
+                <label class="font-size-h7  text-dark required">Actual No Of Killos</label>
+                <input type="text" class="form-control" placeholder="Actual No Of Killos" formControlName="actualNumberOfKilos"
+                (keypress)="onKeyPressChangesDecimal($event)">
+            </div>
+        </div>
+        <div class="form-row mb-4">
+            <div class="col">
+                <label class="font-size-h7  text-dark">Remark</label>
+                <textarea type="text" class="form-control" formControlName="remark"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="closeModal()">Close</button>
+    <button type="button" class="btn btn-primary" [disabled]="addDailyFeedForm.invalid"
+        (click)="saveDailyFeed()">{{saveButtonText}}</button>
+</div>
