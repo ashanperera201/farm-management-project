@@ -3,7 +3,9 @@ FROM  node:alpine3.13 As builder
 
 WORKDIR /usr/src/app
 
-COPY package.json package-lock.json ./
+RUN npm config set package-lock false
+
+COPY package.json ./
 
 RUN npm install
 
