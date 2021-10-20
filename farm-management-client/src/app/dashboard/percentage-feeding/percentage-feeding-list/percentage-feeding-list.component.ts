@@ -13,6 +13,8 @@ import { PercentageFeedingService } from '../../../shared/services/percentage-fe
 import { PondService } from './../../../shared/services/pond.service';
 import { FarmService } from './../../../shared/services/farm.service';
 import { ClubMemberService } from '../../../shared/services/club-member.service';
+import { CustomAlertComponent } from 'src/app/shared/components/custom-alert/custom-alert.component';
+import { CustomAlertService } from 'src/app/shared/components/custom-alert/custom-alert.service';
 
 @Component({
   selector: 'app-percentage-feeding-list',
@@ -33,6 +35,11 @@ export class PercentageFeedingListComponent implements OnInit {
   page: any = 1;
   percentageFeedSubscriptions: Subscription[] = [];
   filterForm! : FormGroup;
+  initialData: any = {
+    farmList: [],
+    ownerList: [],
+    pondList: []
+  }
 
   @BlockUI() blockUI!: NgBlockUI;
 
@@ -43,7 +50,8 @@ export class PercentageFeedingListComponent implements OnInit {
     private pondService : PondService,
     private toastrService: ToastrService,
     private modalService: NgbModal,
-    private fileService: FileService
+    private fileService: FileService,
+    private customAlertService: CustomAlertService
   ) { }
 
   ngOnInit(): void {
@@ -63,6 +71,9 @@ export class PercentageFeedingListComponent implements OnInit {
   resetFilters = () => {
     this.filterForm.reset();
     this.percentageFeedingList = this.initialPercentageFeedingList;
+    this.farmList = [];
+    this.pondList = [];
+    this.ownerList = this.initialData.ownerList;
   }
 
   filterChange = (event: any) => {
@@ -73,12 +84,24 @@ export class PercentageFeedingListComponent implements OnInit {
 
     if(owner){
       this.percentageFeedingList = this.percentageFeedingList.filter(x => x.owner._id === owner);
+      const filteredFarmList = this.initialData.farmList.filter((x: any) => x.owner && x.owner._id === owner);
+      if (filteredFarmList && filteredFarmList.length > 0) {
+        this.farmList = filteredFarmList;
+      } else {
+        this.farmList = [];
+      }
     }
     if(farmer){
       this.percentageFeedingList = this.percentageFeedingList.filter(x => x.farmer._id === farmer);
+      const pondList = this.initialData.pondList.filter((x: any) => (x.farmer && x.farmer._id === farmer) && (x.owner && x.owner._id === owner));
+      if (pondList && pondList.length > 0) {
+        this.pondList = pondList;
+      } else {
+        this.pondList = [];
+      }
     }
     if(pond){
-      this.percentageFeedingList = this.percentageFeedingList.filter(x => x.pond._id === pond);
+      this.percentageFeedingList = this.initialPercentageFeedingList.filter(x => x.pond?._id === pond);
     }
   }
 
@@ -104,16 +127,19 @@ export class PercentageFeedingListComponent implements OnInit {
     this.percentageFeedSubscriptions.push(this.clubMemberService.fetchClubMembers().pipe(switchMap((ownerRes: any) => {
       if (ownerRes && ownerRes.result) {
         this.ownerList = ownerRes.result;
+        this.initialData.ownerList = ownerRes.result;
       }
       return this.pondService.fetchPonds()
     })).pipe(switchMap((resPonds: any) => {
       if (resPonds && resPonds.result) {
-        this.pondList = resPonds.result;
+        this.initialData.pondList = resPonds.result;
+        this.pondList = [];
       }
       return this.farmService.fetchFarms()
     })).subscribe((farmRes: any) => {
       if (farmRes && farmRes.result) {
-        this.farmList = farmRes.result;
+        this.initialData.farmList = farmRes.result;
+        this.farmList = [];
       }
     }))
     this.blockUI.stop();
@@ -128,6 +154,7 @@ export class PercentageFeedingListComponent implements OnInit {
     });
     addPercentageFeedingrModal.componentInstance.afterSave.subscribe((res: any) => {
       if (res) {
+        this.percentageFeedingList = Object.assign([], this.percentageFeedingList)
         this.percentageFeedingList.unshift(res);
       }
     });
@@ -158,19 +185,37 @@ export class PercentageFeedingListComponent implements OnInit {
   }
 
   deleteSelected = () => {
-    this.blockUI.start('Deleting....');
-    const pfIds: string[] = (this.percentageFeedingList.filter(x => x.isChecked === true)).map(x => x._id);
-    if (pfIds && pfIds.length > 0) {
-      this.proceedDelete(pfIds);
-    } else {
-      this.toastrService.error("Please select items to delete.", "Error");
-      this.blockUI.stop();
-    }
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      const pfIds: string[] = (this.percentageFeedingList.filter(x => x.isChecked === true)).map(x => x._id);
+      if (pfIds && pfIds.length > 0) {
+        this.proceedDelete(pfIds);
+      } else {
+        this.toastrService.error("Please select items to delete.", "Error");
+        this.blockUI.stop();
+      }
+      deleteModal.close();
+    });
   }
   
   deleteRecord = (pfId: any) => {
-    this.blockUI.start('Deleting....');
-    this.proceedDelete([].concat(pfId));
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      this.proceedDelete([].concat(pfId));
+      deleteModal.close();
+    });
   }
   
   proceedDelete = (pfIds: string[]) => {
@@ -208,9 +253,9 @@ export class PercentageFeedingListComponent implements OnInit {
       this.blockUI.start('Exporting Excel...');
       const csvData: any[] = this.percentageFeedingList.map(x => {
         return {
-          'Owner': x.owner.firstName,
-          'Farm': x.farmer.farmName,
-          'Pond': x.pond.pondNo,
+          'Owner': x.owner?.firstName,
+          'Farm': x.farmer?.farmName,
+          'Pond': x.pond?.pondNo,
           'Average Body Weight': x.averageBodyWeight,
           'Feed Percentage' : x.feedPercentage,
           'Created On':  moment(x.createdOn).format('YYYY-MM-DD')
@@ -223,9 +268,9 @@ export class PercentageFeedingListComponent implements OnInit {
       this.blockUI.start('Exporting Pdf...');
       const pdfData: any[] = this.percentageFeedingList.map(x => {
         return {
-          'Owner': x.owner.firstName,
-          'Farm': x.farmer.farmName,
-          'Pond': x.pond.pondNo,
+          'Owner': x.owner?.firstName,
+          'Farm': x.farmer?.farmName,
+          'Pond': x.pond?.pondNo,
           'Average Body Weight': x.averageBodyWeight,
           'Feed Percentage' : x.feedPercentage,
           'Created On':  moment(x.createdOn).format('YYYY-MM-DD')

@@ -11,6 +11,8 @@ import { FileService } from '../../../shared/services/file.service';
 import { SalesPriceService } from '../../../shared/services/sales-price.service';
 import { SalesPriceAddComponent } from '../sales-price-add/sales-price-add.component';
 import { removeSalesPrice } from '../../../redux/actions/sales-price.actions';
+import { CustomAlertComponent } from 'src/app/shared/components/custom-alert/custom-alert.component';
+import { CustomAlertService } from 'src/app/shared/components/custom-alert/custom-alert.service';
 
 @Component({
   selector: 'app-sales-price-list',
@@ -34,7 +36,8 @@ export class SalesPriceListComponent implements OnInit {
     private toastrService: ToastrService,
     private modalService: NgbModal,
     private fileService: FileService,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private customAlertService: CustomAlertService
   ) { }
 
   ngOnInit(): void {
@@ -62,9 +65,7 @@ export class SalesPriceListComponent implements OnInit {
       modalDialogClass: 'modal-md',
     });
     addSalesPriceModal.componentInstance.afterSave.subscribe((res: any) => {
-      if (res && res.result) {
-        this.salesPriceList.unshift(res.result);
-      }
+      this.fetchSalesPrice();
     });
   }
 
@@ -90,19 +91,37 @@ export class SalesPriceListComponent implements OnInit {
   }
 
   deleteSelected = () => {
-    this.blockUI.start('Deleting....');
-    const pfIds: string[] = (this.salesPriceList.filter(x => x.isChecked === true)).map(x => x._id);
-    if (pfIds && pfIds.length > 0) {
-      this.proceedDelete(pfIds);
-    } else {
-      this.toastrService.error("Please select items to delete.", "Error");
-      this.blockUI.stop();
-    }
+    const deleteModal = this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      const pfIds: string[] = (this.salesPriceList.filter(x => x.isChecked === true)).map(x => x._id);
+      if (pfIds && pfIds.length > 0) {
+        this.proceedDelete(pfIds);
+      } else {
+        this.toastrService.error("Please select items to delete.", "Error");
+        this.blockUI.stop();
+      }
+      deleteModal.close();
+    });
   }
 
   deleteRecord = (pfId: any) => {
-    this.blockUI.start('Deleting....');
-    this.proceedDelete([].concat(pfId));
+    const deleteModal = this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      this.proceedDelete([].concat(pfId));
+      deleteModal.close();
+    });
   }
 
   proceedDelete = (salesPriceIds: string[]) => {

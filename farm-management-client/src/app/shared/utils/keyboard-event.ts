@@ -35,3 +35,14 @@ export const keyPressDecimals = (event: any) => {
         return true;
     }
 }
+
+export const keyPressEnter = (event: any) => {
+    var charCode = (event.which) ? event.which : event.keyCode;
+    if ((charCode == 13)) {
+        return true;
+    } 
+    else {
+        event.preventDefault();
+        return false;
+    }
+}

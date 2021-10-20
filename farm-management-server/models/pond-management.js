@@ -5,7 +5,7 @@ const pondManagementSchema = mongoose.Schema({
     owner: { type: mongoose.Schema.Types.ObjectId, ref: 'ClubMember', required: true },
     farmer: { type: mongoose.Schema.Types.ObjectId, ref: 'FarmManagement', required: true },
     pondNo: { type: Number },
-    areaOfPond: { type: Number },
+    areaOfPond: { type: String },
     gradeOfPond: { type: String },
     fixedCost: { type: Number },
     createdBy: { type: String },

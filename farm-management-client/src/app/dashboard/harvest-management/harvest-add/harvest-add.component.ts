@@ -221,7 +221,7 @@ export class HarvestAddComponent implements OnInit {
       return 0;
     }
     if (this.harvestForm && this.harvestForm.get('harvestQuantity')?.value != null && this.harvestForm.get('harvestAWB')?.value != null) {
-      return (this.harvestForm.get('harvestQuantity')?.value / this.harvestForm.get('harvestAWB')?.value).toFixed(2);
+      return ((this.harvestForm.get('harvestQuantity')?.value) * 1000 / this.harvestForm.get('harvestAWB')?.value).toFixed(2);
     }
     return '';
   }

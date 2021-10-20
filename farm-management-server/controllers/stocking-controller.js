@@ -111,7 +111,8 @@ exports.saveStockDetail = async (req, res) => {
                 dateOfStocking: payload.dateOfStocking,
                 fullStocked: payload.fullStocked,
                 plPrice: payload.plPrice,
-                actualPlRemains: payload.actualPlRemains
+                actualPlRemains: payload.actualPlRemains,
+                cycle: payload.cycle
             }
             const savedResult = await stockManager.saveStockDetail(stockDetail);
             if (savedResult) {
@@ -152,7 +153,8 @@ exports.updateStockDetail = async (req, res) => {
                 modifiedOn: payload.modifiedOn,
                 isActive: payload.isActive,
                 clientTenentId: payload.clientTenentId,
-                countryCode: payload.countryCode
+                countryCode: payload.countryCode,
+                cycle: payload.cycle
             }
 
             const updatedResult = await stockManager.updateStockDetail(stockDetail);

@@ -32,7 +32,7 @@
                 <div class="form-group">
                     <label class="font-size-h6 font-weight-bolder text-dark">User Password</label>
                     <input class="form-control form-control-solid h-auto py-7 px-6 rounded-lg font-size-h6" type="password"
-                        name="fullname" placeholder="User Password" autocomplete="off" formControlName="password"/>
+                        name="fullname" placeholder="User Password" autocomplete="off" formControlName="password" (keyup.enter)="login()" />
                 </div>
             </div>
         </div>

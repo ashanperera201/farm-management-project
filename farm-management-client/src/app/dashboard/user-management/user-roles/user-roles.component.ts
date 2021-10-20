@@ -8,6 +8,8 @@ import { ExportTypes } from '../../../shared/enums/export-type';
 import { UserManagementService } from '../../../shared/services/user-management.service';
 import { FileService } from '../../../shared/services/file.service';
 import { RoleAddComponent } from '../role-add/role-add.component';
+import { CustomAlertComponent } from 'src/app/shared/components/custom-alert/custom-alert.component';
+import { CustomAlertService } from 'src/app/shared/components/custom-alert/custom-alert.service';
 
 @Component({
   selector: 'app-user-roles',
@@ -32,7 +34,8 @@ export class UserRolesComponent implements OnInit, OnDestroy {
     private userManagementService: UserManagementService,
     private modalService: NgbModal,
     private toastrService: ToastrService,
-    private fileService: FileService
+    private fileService: FileService,
+    private customAlertService: CustomAlertService
   ) { }
 
   ngOnInit(): void {
@@ -74,19 +77,37 @@ export class UserRolesComponent implements OnInit, OnDestroy {
   }
 
   deleteSelected = () => {
-    this.blockUI.start('Deleting....');
-    const roleIds: string[] = (this.roleList.filter(x => x.isChecked === true)).map(x => x._id);
-    if (roleIds && roleIds.length > 0) {
-      this.proceedDelete(roleIds);
-    } else {
-      this.toastrService.error("Please select roles to delete.", "Error");
-      this.blockUI.stop();
-    }
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      const roleIds: string[] = (this.roleList.filter(x => x.isChecked === true)).map(x => x._id);
+      if (roleIds && roleIds.length > 0) {
+        this.proceedDelete(roleIds);
+      } else {
+        this.toastrService.error("Please select roles to delete.", "Error");
+        this.blockUI.stop();
+      }
+      deleteModal.close();
+    });
   }
 
   deleteRole = (roleId: any) => {
-    this.blockUI.start('Deleting....');
-    this.proceedDelete([].concat(roleId));
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+  
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      this.proceedDelete([].concat(roleId));
+      deleteModal.close();
+    });
   }
 
   proceedDelete = (roleIds: string[]) => {

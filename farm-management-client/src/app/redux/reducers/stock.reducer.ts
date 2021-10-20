@@ -1,7 +1,8 @@
 import { StockActions } from '../action-types';
 
 const initialState = {
-    stockDetails: [],
+  stockDetails: [],
+  cycleCount: 0
 }
 
 export function stockReducer(state = initialState, action: any): any {
@@ -33,6 +34,7 @@ export function stockReducer(state = initialState, action: any): any {
                         fullStocked: action.payload.fullStocked,
                         plPrice: action.payload.plPrice,
                         actualPlRemains: action.payload.actualPlRemains,
+                        cycle: action.payload.cycle,
                     } : sd)
             }
         case StockActions.STOCK_BULK_REMOVE:
@@ -43,10 +45,25 @@ export function stockReducer(state = initialState, action: any): any {
             return {
                 ...state,
                 stockDetails: [...state.stockDetails]
-            }
+        }
         default:
             return {
                 ...state
             }
     }
+}
+
+
+export function cycleCountReducer(state = initialState, action: any): any {
+  switch (action.type) {
+      case StockActions.UPDATE_CYCLE:
+          return {
+              ...state,
+              cycleCount: action.payload,
+          }
+      default:
+          return {
+              ...state
+          }
+  }
 }

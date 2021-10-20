@@ -10,6 +10,8 @@ import {HarvestService} from '../../../shared/services/harvest.service';
 import {HarvestAddComponent} from '../harvest-add/harvest-add.component';
 import { Store } from '@ngrx/store';
 import { AppState, removeHarvest, setHarvest, updateHarvest } from '../../../redux';
+import { CustomAlertService } from 'src/app/shared/components/custom-alert/custom-alert.service';
+import { CustomAlertComponent } from 'src/app/shared/components/custom-alert/custom-alert.component';
 
 @Component({
   selector: 'app-harvest-list',
@@ -31,7 +33,8 @@ export class HarvestListComponent implements OnInit {
               private toastrService: ToastrService,
               private modalService: NgbModal,
               private fileService: FileService,
-              private store: Store<AppState>) { }
+              private store: Store<AppState>,
+              private customAlertService: CustomAlertService) { }
 
   ngOnInit(): void {
     this.fetchHarvestList();
@@ -61,6 +64,7 @@ export class HarvestListComponent implements OnInit {
     if (addFarmModal.componentInstance.afterSave) {
       addFarmModal.componentInstance.afterSave.subscribe((res: any) => {
         if (res) {
+          this.harvestList = Object.assign([], this.harvestList)
           this.harvestList.unshift(res);
         }
       });
@@ -103,19 +107,37 @@ export class HarvestListComponent implements OnInit {
   }
 
   deleteSelected = () => {
-    this.blockUI.start('Deleting....');
-    const harvestIds: string[] = (this.harvestList.filter(x => x.isChecked === true)).map(x => x._id);
-    if (harvestIds && harvestIds.length > 0) {
-      this.proceedDelete(harvestIds);
-    } else {
-      this.toastrService.error('Please select farms to delete.', 'Error');
-      this.blockUI.stop();
-    }
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      const harvestIds: string[] = (this.harvestList.filter(x => x.isChecked === true)).map(x => x._id);
+      if (harvestIds && harvestIds.length > 0) {
+        this.proceedDelete(harvestIds);
+      } else {
+        this.toastrService.error('Please select farms to delete.', 'Error');
+        this.blockUI.stop();
+      }
+      deleteModal.close();
+    });
   }
 
   deleteHarvestRecord = (harvestId: any) => {
-    this.blockUI.start('Deleting....');
-    this.proceedDelete([].concat(harvestId));
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      this.proceedDelete([].concat(harvestId));
+      deleteModal.close();
+    });
   }
 
   proceedDelete = (harvestIds: string[]) => {

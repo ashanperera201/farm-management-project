@@ -71,6 +71,8 @@ export class WeeklyApplicationAddComponent implements OnInit, OnDestroy {
       unit: new FormControl(null, Validators.required),
       numberOfUnit: new FormControl(null, Validators.compose([Validators.required]))
     });
+
+    this.addWeeklyApplicationForm.controls['unit'].disable();
   }
 
   fetchInitialData = () => {
@@ -170,6 +172,18 @@ export class WeeklyApplicationAddComponent implements OnInit, OnDestroy {
       }
     }
 
+  }
+
+  applicationOnChange = () => {
+    const applicationType = this.addWeeklyApplicationForm.get("application")?.value;
+    if (applicationType) {
+      const filteredApplication = this.initialData.applicationList.filter((x: any) => x._id === applicationType);
+      if (filteredApplication && filteredApplication.length > 0) {
+        this.addWeeklyApplicationForm.get("unit")?.patchValue(filteredApplication[0].unit);
+      } else {
+        this.addWeeklyApplicationForm.get("unit")?.patchValue('');
+      }
+    }
   }
 
   saveOrUpdateWeeklyApplication = () => {

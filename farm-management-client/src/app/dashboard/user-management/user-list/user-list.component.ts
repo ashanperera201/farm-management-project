@@ -8,6 +8,8 @@ import { UserManagementService } from '../../../../app/shared/services/user-mana
 import { ExportTypes } from '../../../shared/enums/export-type';
 import { UserAddComponent } from '../user-add/user-add.component';
 import { FileService } from '../../../shared/services/file.service';
+import { CustomAlertComponent } from 'src/app/shared/components/custom-alert/custom-alert.component';
+import { CustomAlertService } from 'src/app/shared/components/custom-alert/custom-alert.service';
 
 @Component({
   selector: 'app-user-list',
@@ -31,7 +33,8 @@ export class UserListComponent implements OnInit, OnDestroy {
     private userManagementService: UserManagementService,
     private modalService: NgbModal,
     private toastrService: ToastrService,
-    private fileService: FileService) { }
+    private fileService: FileService,
+    private customAlertService: CustomAlertService) { }
 
   ngOnInit(): void {
     this.fetchAllUsers();
@@ -111,19 +114,37 @@ export class UserListComponent implements OnInit, OnDestroy {
   }
 
   deleteSelected = () => {
-    this.blockUI.start('Deleting....');
-    const userIds: string[] = (this.userList.filter(x => x.isChecked === true)).map(x => x._id);
-    if (userIds && userIds.length > 0) {
-      this.proceedDelete(userIds);
-    } else {
-      this.toastrService.error("Please select permissions to delete.", "Error");
-      this.blockUI.stop();
-    }
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      const userIds: string[] = (this.userList.filter(x => x.isChecked === true)).map(x => x._id);
+      if (userIds && userIds.length > 0) {
+        this.proceedDelete(userIds);
+      } else {
+        this.toastrService.error("Please select permissions to delete.", "Error");
+        this.blockUI.stop();
+      }
+      deleteModal.close();
+    });
   }
 
   deleteUser = (userId: any) => {
-    this.blockUI.start('Deleting....');
-    this.proceedDelete([].concat(userId));
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+  
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      this.proceedDelete([].concat(userId));
+      deleteModal.close();
+    });
   }
 
   proceedDelete = (userIds: string[]) => {

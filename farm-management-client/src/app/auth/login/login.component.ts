@@ -9,6 +9,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { RegisterComponent } from '../register/register.component';
 import { ForgetPasswordComponent } from '../forget-password/forget-password.component';
 import { TokenManagementService } from '../../shared/services/token-management.service';
+import { keyPressEnter } from '../../shared/utils';
 
 @Component({
   selector: 'app-login',

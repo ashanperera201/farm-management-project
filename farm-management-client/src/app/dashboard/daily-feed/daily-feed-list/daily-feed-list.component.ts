@@ -15,6 +15,8 @@ import { ClubMemberService } from '../../../shared/services/club-member.service'
 import { DailyFeedService } from '../../../shared/services/daily-feed.service';
 import { Store } from '@ngrx/store';
 import { AppState, removeDailyFeed, setDailyFeed, updateDailyFeed } from '../../../redux';
+import { CustomAlertService } from 'src/app/shared/components/custom-alert/custom-alert.service';
+import { CustomAlertComponent } from 'src/app/shared/components/custom-alert/custom-alert.component';
 
 @Component({
   selector: 'app-daily-feed-list',
@@ -35,6 +37,11 @@ export class DailyFeedListComponent implements OnInit {
   page: any = 1;
   dailyFeedSubscriptions: Subscription[] = [];
   filterForm!: FormGroup;
+  initialData: any = {
+    farmList: [],
+    ownerList: [],
+    pondList: []
+  }
 
   @BlockUI() blockUI!: NgBlockUI;
 
@@ -46,7 +53,8 @@ export class DailyFeedListComponent implements OnInit {
     private toastrService: ToastrService,
     private modalService: NgbModal,
     private fileService: FileService,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private customAlertService: CustomAlertService
   ) { }
 
   ngOnInit(): void {
@@ -66,6 +74,9 @@ export class DailyFeedListComponent implements OnInit {
   resetFilters = () => {
     this.filterForm.reset();
     this.dailyFeedList = this.initialDailyFeedList;
+    this.farmList =   [];
+    this.pondList =   [];
+    this.ownerList = this.initialData.ownerList;
   }
 
 
@@ -77,12 +88,24 @@ export class DailyFeedListComponent implements OnInit {
 
     if(owner){
       this.dailyFeedList = this.dailyFeedList.filter(x => x.owner._id === owner);
+      const filteredFarmList = this.initialData.farmList.filter((x: any) => x.owner && x.owner._id === owner);
+      if (filteredFarmList && filteredFarmList.length > 0) {
+        this.farmList = filteredFarmList;
+      } else {
+        this.farmList = [];
+      }
     }
     if(farmer){
       this.dailyFeedList = this.dailyFeedList.filter(x => x.farmer._id === farmer);
+      const pondList = this.initialData.pondList.filter((x: any) => (x.farmer && x.farmer._id === farmer) && (x.owner && x.owner._id === owner));
+      if (pondList && pondList.length > 0) {
+        this.pondList = pondList;
+      } else {
+        this.pondList = [];
+      }
     }
     if(pond){
-      this.dailyFeedList = this.dailyFeedList.filter(x => x.pond._id === pond);
+      this.dailyFeedList = this.initialDailyFeedList.filter(x => x.pond?._id === pond);
     }
   }
 
@@ -105,19 +128,22 @@ export class DailyFeedListComponent implements OnInit {
     this.blockUI.start('Fetching Data...');
     this.dailyFeedSubscriptions.push(this.clubMemberService.fetchClubMembers().pipe(switchMap((ownerRes: any) => {
       if (ownerRes && ownerRes.result) {
+        this.initialData.ownerList = ownerRes.result;
         this.ownerList = ownerRes.result;
       }
       return this.pondService.fetchPonds()
     })).pipe(switchMap((resPonds: any) => {
       if (resPonds && resPonds.result) {
-        this.pondList = resPonds.result;
+        this.initialData.pondList = resPonds.result;
+        this.pondList = [];
       }
       return this.farmService.fetchFarms()
     })).subscribe((farmRes: any) => {
       if (farmRes && farmRes.result) {
-        this.farmList = farmRes.result;
+        this.initialData.farmList = farmRes.result;
+        this.farmList = [];
       }
-    }))
+    }));
     this.blockUI.stop();
   }
 
@@ -131,6 +157,7 @@ export class DailyFeedListComponent implements OnInit {
     });
     addDailyFeedrModal.componentInstance.afterSave.subscribe((res: any) => {
       if (res) {
+        this.dailyFeedList = Object.assign([],this.dailyFeedList)
         this.dailyFeedList.unshift(res);
       }
     });
@@ -168,19 +195,37 @@ export class DailyFeedListComponent implements OnInit {
   }
 
   deleteSelected = () => {
-    this.blockUI.start('Deleting....');
-    const pfIds: string[] = (this.dailyFeedList.filter(x => x.isChecked === true)).map(x => x._id);
-    if (pfIds && pfIds.length > 0) {
-      this.proceedDelete(pfIds);
-    } else {
-      this.toastrService.error("Please select items to delete.", "Error");
-      this.blockUI.stop();
-    }
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      const pfIds: string[] = (this.dailyFeedList.filter(x => x.isChecked === true)).map(x => x._id);
+      if (pfIds && pfIds.length > 0) {
+        this.proceedDelete(pfIds);
+      } else {
+        this.toastrService.error("Please select items to delete.", "Error");
+        this.blockUI.stop();
+      }
+      deleteModal.close();
+    });
   }
   
   deleteRecord = (pfId: any) => {
-    this.blockUI.start('Deleting....');
-    this.proceedDelete([].concat(pfId));
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+  
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      this.proceedDelete([].concat(pfId));
+      deleteModal.close();
+    });
   }
   
   proceedDelete = (pfIds: string[]) => {

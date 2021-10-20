@@ -1,0 +1,14 @@
+  <div class="modal-header">
+    <h4 class="modal-title">{{title}}</h4>
+  </div>
+  <!-- Message -->
+  <div class="modal-body">
+    <div class="">
+      <label class="farm_label">{{message}} ?</label>
+    </div>
+    <!-- /- Message -->
+  </div>
+  <div class="modal-footer">
+    <button *ngIf="saveButton" type="button" class="btn btn-success" (click)="onSaveClick($event)">{{saveButton}}</button>
+    <button type="button" class="btn btn-secondary" (click)="onCancelClick($event)">{{cancelButton}}</button>
+  </div>

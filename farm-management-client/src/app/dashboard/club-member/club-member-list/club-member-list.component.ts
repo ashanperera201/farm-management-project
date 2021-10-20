@@ -10,6 +10,8 @@ import { ClubMemberAddComponent } from '../club-member-add/club-member-add.compo
 import * as moment from 'moment';
 import { Store } from '@ngrx/store';
 import { AppState, removeClubMember, setClubMember, updateClubMember } from '../../../redux';
+import { CustomAlertComponent } from 'src/app/shared/components/custom-alert/custom-alert.component';
+import { CustomAlertService } from 'src/app/shared/components/custom-alert/custom-alert.service';
 
 
 @Component({
@@ -34,7 +36,8 @@ export class ClubMemberListComponent implements OnInit {
     private toastrService: ToastrService,
     private modalService: NgbModal,
     private fileService: FileService,
-    private store: Store<AppState>) { }
+    private store: Store<AppState>,
+    private customAlertService: CustomAlertService) { }
 
   ngOnInit(): void {
     this.fetchClubMembers();
@@ -63,6 +66,7 @@ export class ClubMemberListComponent implements OnInit {
     });
     addClubMemberModal.componentInstance.afterSave.subscribe((res: any) => {
       if (res && res.clubMember) {
+        this.clubMemberList = Object.assign([],this.clubMemberList)
         this.clubMemberList.unshift(res.clubMember);
       }
     });
@@ -80,9 +84,9 @@ export class ClubMemberListComponent implements OnInit {
     if (addClubMemberModal.componentInstance.afterSave) {
       addClubMemberModal.componentInstance.afterSave.subscribe((res: any) => {
         if (res) {
-           const index = this.clubMemberList.findIndex((up: any) => up._id === res._id);
+          const index = this.clubMemberList.findIndex((up: any) => up._id === res._id);
           let clubMemberRefs = JSON.parse(JSON.stringify(this.clubMemberList));
-  
+
           clubMemberRefs[index].firstName = res.firstName;
           clubMemberRefs[index].lastName = res.lastName;
           clubMemberRefs[index].email = res.email;
@@ -92,7 +96,7 @@ export class ClubMemberListComponent implements OnInit {
           clubMemberRefs[index].userName = res.userName;
           clubMemberRefs[index].password = res.password;
           clubMemberRefs[index].nic = res.nic;
-  
+
           this.clubMemberList = [...clubMemberRefs];
           // ** 
           this.store.dispatch(updateClubMember(this.clubMemberList[index]));
@@ -102,21 +106,36 @@ export class ClubMemberListComponent implements OnInit {
   }
 
   deleteSelected = () => {
-    this.blockUI.start('Deleting....');
-    const clubMemberIds: string[] = (this.clubMemberList.filter(x => x.isChecked === true)).map(x => x._id);
-    if (clubMemberIds && clubMemberIds.length > 0) {
-      this.proceedDelete(clubMemberIds);
-    } else {
-      this.toastrService.error("Please select items to delete.", "Error");
-      this.blockUI.stop();
-    }
+    const deleteModal = this.customAlertService.openDeleteconfirmation();
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      const clubMemberIds: string[] = (this.clubMemberList.filter(x => x.isChecked === true)).map(x => x._id);
+      if (clubMemberIds && clubMemberIds.length > 0) {
+        this.proceedDelete(clubMemberIds);
+      } else {
+        this.toastrService.error("Please select items to delete.", "Error");
+        this.blockUI.stop();
+      }
+      deleteModal.close();
+    });
   }
 
   deleteClubMemberRecord = (clubMemberId: any) => {
-    this.blockUI.start('Deleting....');
-    this.proceedDelete([].concat(clubMemberId));
-  }
+    const deleteModal = this.customAlertService.openDeleteconfirmation();
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
 
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      this.proceedDelete([].concat(clubMemberId));
+      deleteModal.close();
+    });
+  }
 
   proceedDelete = (clubMemberIds: string[]) => {
     let form = new FormData();
@@ -125,6 +144,7 @@ export class ClubMemberListComponent implements OnInit {
     this.memberListSubscriptions.push(this.clubMemberService.deleteClubMember(form).subscribe((deletedResult: any) => {
       if (deletedResult) {
         this.isAllChecked = false;
+        this.blockUI.stop();
         clubMemberIds.forEach(e => { const index: number = this.clubMemberList.findIndex((up: any) => up._id === e); this.clubMemberList.splice(index, 1); });
         this.store.dispatch(removeClubMember(clubMemberIds));
         this.toastrService.success('Successfully deleted.', 'Success');

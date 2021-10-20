@@ -11,7 +11,9 @@ import { ClubMemberService } from '../../../shared/services/club-member.service'
 import { FarmService } from '../../../shared/services/farm.service';
 import { PondService } from '../../../shared/services/pond.service';
 import { StockService } from '../../../shared/services/stock.service';
-import { keyPressNumbers } from '../../../shared/utils';
+import { keyPressDecimals } from '../../../shared/utils';
+import { Store } from '@ngrx/store';
+import { AppState, updateCycleValue } from '../../../redux';
 
 @Component({
   selector: 'app-stock-add',
@@ -42,6 +44,8 @@ export class StockAddComponent implements OnInit, DoCheck {
     ownerList: []
   }
 
+  cycleValue = 1;
+
   constructor(
     private pondService: PondService,
     private stockService: StockService,
@@ -49,7 +53,8 @@ export class StockAddComponent implements OnInit, DoCheck {
     private farmService: FarmService,
     private toastrService: ToastrService,
     private activeModal: NgbActiveModal,
-    private parserFormatter: NgbDateParserFormatter) {
+    private parserFormatter: NgbDateParserFormatter,
+    private store: Store<AppState>) {
     this.model = {
       year: 0,
       month: 0,
@@ -79,6 +84,27 @@ export class StockAddComponent implements OnInit, DoCheck {
         day: current.getDate()
       };
       this.addStockForm.get('dateOfStocking')?.patchValue(this.model);
+
+      // this.store.select(selectCycleCount).subscribe(res => {
+      //   if (res) {
+      //     let count = +res + 1;
+      //     this.addStockForm.get("cycle")?.patchValue('cycle' + count);
+      //   } else {
+      //     this.cycleValue = this.cycleValue++
+      //     this.addStockForm.get("cycle")?.patchValue('cycle' + this.cycleValue);
+      //   }
+      // });
+
+      let cycleVal = localStorage.getItem('cycle-count');
+
+      if (cycleVal) {
+        this.cycleValue = +cycleVal;
+      } else {
+        localStorage.setItem('cycle-count', this.cycleValue + '');
+      }
+
+      this.addStockForm.get("cycle")?.patchValue('cycle' + this.cycleValue);
+
     }
   }
 
@@ -124,9 +150,11 @@ export class StockAddComponent implements OnInit, DoCheck {
       fullStocked: new FormControl(null, Validators.compose([Validators.required])),
       plPrice: new FormControl(null, Validators.compose([Validators.required])),
       actualPlRemains: new FormControl(null, Validators.compose([Validators.required])),
+      cycle: new FormControl(null, Validators.compose([Validators.required])),
     });
 
     this.addStockForm.controls['actualPlRemains'].disable();
+    this.addStockForm.controls['cycle'].disable();
   }
 
   clearAddStockForm = () => {
@@ -215,6 +243,7 @@ export class StockAddComponent implements OnInit, DoCheck {
         stock.fullStocked = stockForm.fullStocked;
         stock.plPrice = stockForm.plPrice;
         stock.actualPlRemains = stockForm.actualPlRemains;
+        stock.cycle = stockForm.cycle;
 
         this.stockService.updateStock(stock).subscribe(res => {
           if (res) {
@@ -239,11 +268,19 @@ export class StockAddComponent implements OnInit, DoCheck {
         stock.fullStocked = stockForm.fullStocked;
         stock.plPrice = stockForm.plPrice;
         stock.actualPlRemains = stockForm.actualPlRemains;
+        stock.cycle = stockForm.cycle;
 
         this.stockService.saveStock(stock).subscribe(res => {
           if (res && res.result) {
             this.afterSave.emit(res.result);
             this.closeModal();
+            this.store.dispatch(updateCycleValue(this.cycleValue));
+            let cycleVal = localStorage.getItem('cycle-count');
+            if (cycleVal) {
+              this.cycleValue = +cycleVal + 1;
+              localStorage.setItem('cycle-count', this.cycleValue + '');
+              this.addStockForm.get("cycle")?.patchValue('cycle' + this.cycleValue);
+            }
             this.toastrService.success("Stock data saved successfully.", "Successfully Saved");
           }
         }, () => {
@@ -254,7 +291,7 @@ export class StockAddComponent implements OnInit, DoCheck {
   }
 
   onKeyPressChanges = (event: any): boolean => {
-    return keyPressNumbers(event);
+    return keyPressDecimals(event);
   }
 
   closeModal = () => {

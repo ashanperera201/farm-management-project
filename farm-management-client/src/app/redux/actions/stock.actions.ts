@@ -19,3 +19,8 @@ export const removeStockBulk = (stockIds: string[]) => ({
     type: StockActions.STOCK_BULK_REMOVE,
     payload: stockIds
 })
+
+export const updateCycleValue = (count: any) => ({
+  type: StockActions.UPDATE_CYCLE,
+  payload: count
+})

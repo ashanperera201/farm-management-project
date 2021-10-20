@@ -93,13 +93,13 @@ export class HarvestDetailReportComponent implements OnInit, OnDestroy {
     const pond = this.filterForm.get("pond")?.value;
 
     if (owner) {
-      this.harvestDetails = this.harvestDetails.filter(x => x.owner._id === owner);
+      this.harvestDetails = this.harvestDetails.filter(x => x.owner?._id === owner);
     }
     if (farmer) {
-      this.harvestDetails = this.harvestDetails.filter(x => x.farmer._id === farmer);
+      this.harvestDetails = this.harvestDetails.filter(x => x.farmer?._id === farmer);
     }
     if (pond) {
-      this.harvestDetails = this.harvestDetails.filter(x => x.pond._id === pond);
+      this.harvestDetails = this.harvestDetails.filter(x => x.pond?._id === pond);
     }
   }
 

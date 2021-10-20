@@ -106,13 +106,13 @@ export class PercentageFeedingReportComponent implements OnInit, OnDestroy {
     const pond = this.filterForm.get("pond")?.value;
 
     if (owner) {
-      this.percentageFeedingList = this.percentageFeedingList.filter(x => x.owner._id === owner);
+      this.percentageFeedingList = this.percentageFeedingList.filter(x => x.owner?._id === owner);
     }
     if (farmer) {
-      this.percentageFeedingList = this.percentageFeedingList.filter(x => x.farmer._id === farmer);
+      this.percentageFeedingList = this.percentageFeedingList.filter(x => x.farmer?._id === farmer);
     }
     if (pond) {
-      this.percentageFeedingList = this.percentageFeedingList.filter(x => x.pond._id === pond);
+      this.percentageFeedingList = this.percentageFeedingList.filter(x => x.pond?._id === pond);
     }
   }
 

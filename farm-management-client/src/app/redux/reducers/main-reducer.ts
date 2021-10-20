@@ -5,7 +5,7 @@ import { clubMemberReducer } from './club-member.reducer';
 import { dailyFeedReducer } from './daily-feed.reducer';
 import { farmManagmentReducer } from './farm-management.reducer';
 import { salesPriceReducer } from './sales-price.reducer';
-import { stockReducer } from './stock.reducer';
+import { cycleCountReducer, stockReducer } from './stock.reducer';
 import { UserReducer } from './user.reducer';
 import { weeklyApplicationReducer } from './weekly-application.reducer';
 import { weeklySamplingReducer } from './weekly-samplig.reducer';
@@ -21,5 +21,6 @@ export const reducers: ActionReducerMap<AppState> = {
   clubMember: clubMemberReducer,
   dailyFeed: dailyFeedReducer,
   farmManagement: farmManagmentReducer,
-  harvestManagement: harvestReducer
+  harvestManagement: harvestReducer,
+  cycleCount: cycleCountReducer
 }

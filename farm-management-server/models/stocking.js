@@ -17,7 +17,8 @@ const stockingSchema = mongoose.Schema({
     modifiedOn: { type: Date },
     isActive: { type: Boolean },
     clientTenentId: { type: String },
-    countryCode: { type: String }
+    countryCode: { type: String },
+    cycle: { type: String }
 })
 
 const Stocking = mongoose.model('Stocking', stockingSchema)

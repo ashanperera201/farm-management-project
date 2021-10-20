@@ -10,6 +10,8 @@ import { ExportTypes } from '../../../shared/enums/export-type';
 import { FileService } from '../../../shared/services/file.service';
 import { StockService } from '../../../shared/services/stock.service';
 import { StockAddComponent } from '../stock-add/stock-add.component';
+import { CustomAlertComponent } from 'src/app/shared/components/custom-alert/custom-alert.component';
+import { CustomAlertService } from 'src/app/shared/components/custom-alert/custom-alert.service';
 
 @Component({
   selector: 'app-stock-list',
@@ -33,7 +35,8 @@ export class StockListComponent implements OnInit {
     private toastrService: ToastrService,
     private modalService: NgbModal,
     private fileService: FileService,
-    private store: Store<AppState>
+    private store: Store<AppState>,
+    private customAlertService: CustomAlertService
   ) { }
 
   ngOnInit(): void {
@@ -108,19 +111,37 @@ export class StockListComponent implements OnInit {
   }
 
   deleteSelected = () => {
-    this.blockUI.start('Deleting....');
-    const stockIds: string[] = (this.stockList.filter(x => x.isChecked === true)).map(x => x._id);
-    if (stockIds && stockIds.length > 0) {
-      this.proceedDelete(stockIds);
-    } else {
-      this.toastrService.error("Please select stocks to delete.", "Error");
-      this.blockUI.stop();
-    }
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      const stockIds: string[] = (this.stockList.filter(x => x.isChecked === true)).map(x => x._id);
+      if (stockIds && stockIds.length > 0) {
+        this.proceedDelete(stockIds);
+      } else {
+        this.toastrService.error("Please select stocks to delete.", "Error");
+        this.blockUI.stop();
+      }
+      deleteModal.close();
+    });
   }
 
   deleteFarmRecord = (stockId: any) => {
-    this.blockUI.start('Deleting....');
-    this.proceedDelete([].concat(stockId));
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      this.proceedDelete([].concat(stockId));
+      deleteModal.close();
+    });
   }
 
   proceedDelete = (stockIds: string[]) => {
@@ -165,7 +186,7 @@ export class StockListComponent implements OnInit {
           'Date of Stocking': moment(x.dateOfStocking).format('YYYY-MM-DD'),
           'Created On': moment(x.createdOn).format('YYYY-MM-DD'),
           'Full Stocked': x.fullStocked,
-          'PL Price': x.plPrice,
+          'PL Price (Rs)': x.plPrice,
           'Actual PL`s Remain': x.actualPlRemains
         }
       });

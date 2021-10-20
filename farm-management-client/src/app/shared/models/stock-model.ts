@@ -8,4 +8,5 @@ export class StockModel {
   fullStocked!: string;
   plPrice!: string;
   actualPlRemains!: string;
+  cycle!: string;
 }

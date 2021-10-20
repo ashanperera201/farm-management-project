@@ -35,26 +35,26 @@
         </select>
       </div>
       <div class="col">
-        <label class="font-size-h7  text-dark required">Pond</label>
+        <label class="font-size-h7  text-dark required">Harvest Date</label>
         <input type="date" formControlName="harvestDate" class="form-control">
       </div>
     </div>
     <div class="form-row mb-4">
       <div class="col">
-        <label class="font-size-h7  text-dark required">Pond</label>
+        <label class="font-size-h7  text-dark required">Harvest Type</label>
         <select class="form-control" formControlName="harvestType">
           <option *ngFor="let type of harvestTypes" [value]="type.code">{{type.value}}</option>
         </select>
       </div>
       <div class="col">
-        <label class="font-size-h7  text-dark required">Harvest Qty</label>
-        <input type="number" class="form-control" placeholder="Harvest Qty" formControlName="harvestQuantity">
+        <label class="font-size-h7  text-dark required">Harvest Qty (Kg)</label>
+        <input type="number" class="form-control" placeholder="Harvest Qty (Kg)" formControlName="harvestQuantity">
       </div>
     </div>
     <div class="form-row mb-4">
       <div class="col">
-        <label class="font-size-h7  text-dark required">Harvest AWB</label>
-        <input type="number" class="form-control" placeholder="Harvest AWB" formControlName="harvestAWB">
+        <label class="font-size-h7  text-dark required">Harvest AWB (g)</label>
+        <input type="number" class="form-control" placeholder="Harvest AWB (g)" formControlName="harvestAWB">
       </div>
       <div class="col">
         <label class="font-size-h7  text-dark">No. of PL's Harvested</label>

@@ -35,7 +35,7 @@
       </div>
       <div class="col">
         <label class="font-size-h7  text-dark required">Number of PL's</label>
-        <input type="text" class="form-control" placeholder="Number of PL's" formControlName="plCount" maxlength="3"
+        <input type="text" class="form-control" placeholder="Number of PL's" formControlName="plCount" maxlength="10"
           onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false"
           (keypress)="onKeyPressChanges($event)">
       </div>
@@ -43,7 +43,7 @@
     <div class="form-row mb-4">
       <div class="col">
         <label class="font-size-h7  text-dark required">PL age</label>
-        <input type="text" class="form-control" placeholder="PL age" formControlName="plAge" maxlength="2"
+        <input type="text" class="form-control" placeholder="PL age" formControlName="plAge" maxlength="10"
           onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false"
           (keypress)="onKeyPressChanges($event)">
       </div>
@@ -70,8 +70,8 @@
         </select>
       </div>
       <div class="col">
-        <label class="font-size-h7  text-dark required">PL Price</label>
-        <input type="text" class="form-control" placeholder="PL Price" formControlName="plPrice" maxlength="5"
+        <label class="font-size-h7  text-dark required">PL Price (Rs)</label>
+        <input type="text" class="form-control" placeholder="PL Price (Rs)" formControlName="plPrice" maxlength="10"
           onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false"
           (keypress)="onKeyPressChanges($event)">
       </div>
@@ -83,7 +83,12 @@
         onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false"
         (keypress)="onKeyPressChanges($event)">
       </div>
-      <div class="col"></div>
+      <div class="col">
+        <label class="font-size-h7  text-dark">Cycle</label>
+        <input type="text" class="form-control" placeholder="Cycle" formControlName="cycle" maxlength="10"
+        onCopy="return false" onDrag="return false" onDrop="return false" onPaste="return false"
+        (keypress)="onKeyPressChanges($event)">
+      </div>
     </div>
   </div>
 </div>

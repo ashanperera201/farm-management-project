@@ -8,6 +8,7 @@ import { SideNavigationComponent } from './side-navigation/side-navigation.compo
 import { NavigationContentComponent } from './navigation-content/navigation-content.component';
 import { NavigationMenuItemComponent } from './navigation-menu-item/navigation-menu-item.component';
 import { NavigationHeaderComponent } from './navigation-header/navigation-header.component';
+import { CustomAlertComponent } from './custom-alert/custom-alert.component';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -18,7 +19,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     SideNavigationComponent,
     NavigationContentComponent,
     NavigationMenuItemComponent,
-    NavigationHeaderComponent
+    NavigationHeaderComponent,
+    CustomAlertComponent
   ],
   imports: [
     CommonModule,
@@ -31,7 +33,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     SideNavigationComponent,
     NavigationContentComponent,
     NavigationMenuItemComponent,
-    NavigationHeaderComponent
+    NavigationHeaderComponent,
+    CustomAlertComponent
   ],
   providers: [
     {

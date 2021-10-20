@@ -8,6 +8,8 @@ import { ExportTypes } from '../../../shared/enums/export-type';
 import { FeedBrandService } from '../../../shared/services/feed-brand.service';
 import { FeedBrandAddComponent } from '../feed-brand-add/feed-brand-add.component';
 import { FileService } from '../../../shared/services/file.service';
+import { CustomAlertService } from 'src/app/shared/components/custom-alert/custom-alert.service';
+import { CustomAlertComponent } from 'src/app/shared/components/custom-alert/custom-alert.component';
 
 @Component({
   selector: 'app-feed-brand-list',
@@ -18,7 +20,7 @@ export class FeedBrandListComponent implements OnInit {
 
   @BlockUI() blockUI!: NgBlockUI;
 
-  isAllChecked! : boolean;
+  isAllChecked!: boolean;
   feedBrandList: any[] = [];
   feedBrandIdList: any[] = [];
   filterParam!: string;
@@ -31,7 +33,8 @@ export class FeedBrandListComponent implements OnInit {
     private feedbandService: FeedBrandService,
     private toastrService: ToastrService,
     private modalService: NgbModal,
-    private fileService: FileService) { }
+    private fileService: FileService,
+    private customAlertService: CustomAlertService) { }
 
   ngOnInit(): void {
     this.fetchFeedBrandsList();
@@ -60,6 +63,7 @@ export class FeedBrandListComponent implements OnInit {
     if (addFeedBrandModal.componentInstance.afterSave) {
       addFeedBrandModal.componentInstance.afterSave.subscribe((res: any) => {
         if (res && res.feedBrand) {
+          this.feedBrandList = Object.assign([], this.feedBrandList)
           this.feedBrandList.unshift(res.feedBrand);
         }
       });
@@ -78,19 +82,37 @@ export class FeedBrandListComponent implements OnInit {
   }
 
   deleteSelected = () => {
-    this.blockUI.start('Deleting....');
-    const feedBrandIds: string[] = (this.feedBrandList.filter(x => x.isChecked === true)).map(x => x._id);
-    if (feedBrandIds && feedBrandIds.length > 0) {
-      this.proceedDelete(feedBrandIds);
-    } else {
-      this.toastrService.error("Please select items to delete.", "Error");
-      this.blockUI.stop();
-    }
+    const deleteModal = this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      const feedBrandIds: string[] = (this.feedBrandList.filter(x => x.isChecked === true)).map(x => x._id);
+      if (feedBrandIds && feedBrandIds.length > 0) {
+        this.proceedDelete(feedBrandIds);
+      } else {
+        this.toastrService.error("Please select items to delete.", "Error");
+        this.blockUI.stop();
+      }
+      deleteModal.close();
+    });
   }
 
   deleteRecord = (feedId: any) => {
-    this.blockUI.start('Deleting....');
-    this.proceedDelete([].concat(feedId));
+    const deleteModal = this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      this.proceedDelete([].concat(feedId));
+      deleteModal.close();
+    });
   }
 
   proceedDelete = (feedBrandIds: string[]) => {
@@ -132,7 +154,7 @@ export class FeedBrandListComponent implements OnInit {
           'Grades': x.grades,
           'Price': x.price,
           'Shrimp Weight': x.shrimpWeight,
-          'Created On':  moment(x.createdOn).format('YYYY-MM-DD'),
+          'Created On': moment(x.createdOn).format('YYYY-MM-DD'),
         }
       });
       this.fileService.exportAsExcelFile(csvData, "feed_brands");
@@ -146,7 +168,7 @@ export class FeedBrandListComponent implements OnInit {
           'Grades': x.grades,
           'Price': x.price,
           'Shrimp Weight': x.shrimpWeight,
-          'Created On':  moment(x.createdOn).format('YYYY-MM-DD'),
+          'Created On': moment(x.createdOn).format('YYYY-MM-DD'),
         }
       });
       const headers: any[] = ['Brand Name', 'Grades', 'Price', 'Shrimp Weight', 'Created On'];

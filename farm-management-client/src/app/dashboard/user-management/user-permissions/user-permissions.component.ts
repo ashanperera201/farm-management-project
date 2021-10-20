@@ -8,6 +8,8 @@ import { FileService } from '../../../shared/services/file.service';
 import { ExportTypes } from '../../../shared/enums/export-type';
 import { UserManagementService } from '../../../shared/services/user-management.service';
 import { UserPermissionAddComponent } from '../user-permission-add/user-permission-add.component';
+import { CustomAlertComponent } from 'src/app/shared/components/custom-alert/custom-alert.component';
+import { CustomAlertService } from 'src/app/shared/components/custom-alert/custom-alert.service';
 
 @Component({
   selector: 'app-user-permissions',
@@ -31,7 +33,8 @@ export class UserPermissionsComponent implements OnInit, OnDestroy {
     private userManagementService: UserManagementService,
     private modalService: NgbModal,
     private fileService: FileService,
-    private toastrService: ToastrService) { }
+    private toastrService: ToastrService,
+    private customAlertService: CustomAlertService) { }
 
   ngOnInit(): void {
     this.fetchUserPermission();
@@ -116,19 +119,37 @@ export class UserPermissionsComponent implements OnInit, OnDestroy {
   }
 
   deleteSelected = () => {
-    this.blockUI.start('Deleting....');
-    const permissionIds: string[] = (this.userPermissionList.filter(x => x.isChecked === true)).map(x => x._id);
-    if (permissionIds && permissionIds.length > 0) {
-      this.proceedDelete(permissionIds);
-    } else {
-      this.toastrService.error("Please select permissions to delete.", "Error");
-      this.blockUI.stop();
-    }
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      const permissionIds: string[] = (this.userPermissionList.filter(x => x.isChecked === true)).map(x => x._id);
+      if (permissionIds && permissionIds.length > 0) {
+        this.proceedDelete(permissionIds);
+      } else {
+        this.toastrService.error("Please select permissions to delete.", "Error");
+        this.blockUI.stop();
+      }
+      deleteModal.close();
+    });
   }
 
   deletePermission = (permissionId: any) => {
-    this.blockUI.start('Deleting....');
-    this.proceedDelete([].concat(permissionId));
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+  
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      this.proceedDelete([].concat(permissionId));
+      deleteModal.close();
+    });
   }
 
   proceedDelete = (permissionIds: string[]) => {

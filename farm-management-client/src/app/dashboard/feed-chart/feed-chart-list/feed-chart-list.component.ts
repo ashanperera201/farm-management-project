@@ -16,6 +16,8 @@ import { AppState, selectStockDetails } from '../../../redux';
 import { PercentageFeedingService } from 'src/app/shared/services/percentage-feeding.service';
 import { WeeklySamplingService } from 'src/app/shared/services/weekly-sampling.service';
 import { keyPressNumbers } from 'src/app/shared/utils';
+import { CustomAlertComponent } from 'src/app/shared/components/custom-alert/custom-alert.component';
+import { CustomAlertService } from 'src/app/shared/components/custom-alert/custom-alert.service';
 
 @Component({
   selector: 'app-feed-chart-list',
@@ -59,7 +61,8 @@ export class FeedChartListComponent implements OnInit {
     private fileService: FileService,
     private store: Store<AppState>,
     private percentageFeedingService: PercentageFeedingService,
-    private weeklySamplingService: WeeklySamplingService
+    private weeklySamplingService: WeeklySamplingService,
+    private customAlertService: CustomAlertService
   ) { }
 
   ngOnInit(): void {
@@ -87,16 +90,16 @@ export class FeedChartListComponent implements OnInit {
     const pond = this.filterForm.get("pond")?.value;
 
     if(owner){
-      this.farmList = this.initialData.farmList.filter((x: any) => x.owner._id === owner);
+      this.farmList = this.initialData.farmList.filter((x: any) => x.owner?._id === owner);
     }
     if(farmer){
-      this.pondList = this.initialData.pondList.filter((x: any) => x.farmer._id === farmer);
+      this.pondList = this.initialData.pondList.filter((x: any) => x.farmer?._id === farmer);
     }
 
     if (pond) {
-      const stock = this.stockDetails.find(sd => sd.farmer._id === farmer && sd.pond._id === pond);
-      this.percentageFeedingList = this.percentageFeedingList.filter((x: any) => x.pond._id === pond);
-      this.weelySamplingList = this.weelySamplingList.filter((x: any) =>  x.pond._id === pond);
+      const stock = this.stockDetails.find(sd => sd.farmer?._id === farmer && sd.pond?._id === pond);
+      this.percentageFeedingList = this.percentageFeedingList.filter((x: any) => x.pond?._id === pond);
+      this.weelySamplingList = this.weelySamplingList.filter((x: any) =>  x.pond?._id === pond);
       if (this.filterForm.get("feedFrequency")?.value) {
         this.calculateDateOfCulture(stock);
       }      
@@ -105,7 +108,7 @@ export class FeedChartListComponent implements OnInit {
 
   calculateDateOfCulture = (stock: any) => {
     if (stock) {
-      this.blockUI.start('Fetching data........');
+      // this.blockUI.start('Fetching data........');
       //const currentDate = new Date();
       const stockDate = new Date(stock.dateOfStocking);
       const subtractedDate = this.currentDate.getDate() - stockDate.getDate();
@@ -133,6 +136,7 @@ export class FeedChartListComponent implements OnInit {
   }
 
   calculateData(doc: any) {
+    debugger 
     const currentDate: any = new Date();
     if (currentDate.getTime() > doc.getTime()) {
       const diffTime = Math.abs(currentDate - doc);
@@ -345,19 +349,37 @@ export class FeedChartListComponent implements OnInit {
   }
 
   deleteSelected = () => {
-    this.blockUI.start('Deleting....');
-    const pfIds: string[] = (this.feedChartList.filter(x => x.isChecked === true)).map(x => x._id);
-    if (pfIds && pfIds.length > 0) {
-      this.proceedDelete(pfIds);
-    } else {
-      this.toastrService.error("Please select items to delete.", "Error");
-      this.blockUI.stop();
-    }
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      const pfIds: string[] = (this.feedChartList.filter(x => x.isChecked === true)).map(x => x._id);
+      if (pfIds && pfIds.length > 0) {
+        this.proceedDelete(pfIds);
+      } else {
+        this.toastrService.error("Please select items to delete.", "Error");
+        this.blockUI.stop();
+      }
+      deleteModal.close();
+    });
   }
   
   deleteRecord = (pfId: any) => {
-    this.blockUI.start('Deleting....');
-    this.proceedDelete([].concat(pfId));
+    const deleteModal =  this.customAlertService.openDeleteconfirmation();
+
+    (deleteModal.componentInstance as CustomAlertComponent).cancelClick.subscribe(() => {
+      deleteModal.close();
+    });
+
+    (deleteModal.componentInstance as CustomAlertComponent).saveClick.subscribe(() => {
+      this.blockUI.start('Deleting....');
+      this.proceedDelete([].concat(pfId));
+      deleteModal.close();
+    });  
   }
   
   proceedDelete = (pfIds: string[]) => {
